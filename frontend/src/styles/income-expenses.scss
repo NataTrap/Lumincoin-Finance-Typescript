@@ -1,0 +1,73 @@
+.container {
+  margin-left: 60px;
+  .title {
+    margin-top: 90px;
+    color: #052C65;
+  }
+
+  .create-button {
+    margin: 40px 0;
+
+    :first-child {
+      margin-right: 10px;
+    }
+  }
+
+  .table {
+    border-top: 1px solid #D9D9D9;
+    margin-top: 40px;
+
+    thead {
+      tr {
+        th {
+          color: #052C65;
+        }
+
+      }
+
+    }
+
+    tbody {
+      tr {
+        .income {
+          color: #198754;
+        }
+
+        .expenses {
+          color: #DC3545;
+        }
+      }
+      td {
+        .edit-icon {
+          margin-left: 10px;
+        }
+      }
+    }
+
+  }
+
+  .date {
+
+    color: #6C757D;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+
+    button {
+      color: #6C757D;
+    }
+  }
+
+  .nav {
+    .button{
+      .such-button {
+        width: 100px;
+        height: 37px;
+        border-radius: 4px;
+        margin-right: 20px;
+      }
+    }
+
+  }
+
+}

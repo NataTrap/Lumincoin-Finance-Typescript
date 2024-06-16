@@ -1,0 +1,59 @@
+@import "income";
+@import "layout";
+@import "main";
+@import "income-expenses";
+
+
+
+
+.form-floating > label {
+  top: -11px;
+
+}
+
+.form{
+  margin-top: 130px;
+
+.logo-autorize {
+  display: flex;
+  justify-content: center;
+}
+  .checkbox-div{
+    margin-top: 0;
+    margin-bottom: 20px;
+    .remember-me{
+      font-size: 12px;
+    }
+  }
+  .link-page{
+    margin-top: 10px;
+    font-size: 12px;
+  }
+  .title {
+    margin: 60px 0 30px 0;
+    color: #052C65;
+  }
+  .text {
+    color: #6C757D;
+  }
+  .style{
+    margin-bottom: 10px;
+    .icon {
+      color: #6C757D;
+    }
+    .form-control{
+      min-height: 38px;
+      height: 38px;
+    }
+
+  }
+}
+
+.create-income-expense {
+  padding: 16px;
+  margin: 23px;
+  text-align: center;
+}
+
+
+
