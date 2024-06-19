@@ -9,10 +9,10 @@
                   fill="#0D6EFD"/>
         </svg>
     </div>
-    <ul class="nav nav-pills flex-column mb-auto">
+    <ul class="nav nav-pills flex-column mb-auto nav-ul">
         <li class="nav-item">
-            <a href="/" class="nav-link text-color">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="14" viewBox="0 0 15 14" fill="none">
+            <a href="/" class="nav-link text-color ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="14" viewBox="0 0 15 14" fill="none" class="svg" >
                     <path fill-rule="evenodd" clip-rule="evenodd"
                           d="M1.5 12.3964V5.89641H2.5V12.3964C2.5 12.6726 2.72386 12.8964 3 12.8964H12C12.2761 12.8964 12.5 12.6726 12.5 12.3964V5.89641H13.5V12.3964C13.5 13.2248 12.8284 13.8964 12 13.8964H3C2.17157 13.8964 1.5 13.2248 1.5 12.3964Z"
                           fill="#052C65"/>
@@ -27,9 +27,8 @@
             </a>
         </li>
         <li class="nav-item" >
-
-            <a href="/income-outcome" class="text-color nav-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">-->
+            <a href="/income-expenses" class="text-color nav-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" class="svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                           d="M11 15C13.2091 15 15 13.2091 15 11C15 8.79086 13.2091 7 11 7C8.79086 7 7 8.79086 7 11C7 13.2091 8.79086 15 11 15ZM16 11C16 13.7614 13.7614 16 11 16C8.23858 16 6 13.7614 6 11C6 8.23858 8.23858 6 11 6C13.7614 6 16 8.23858 16 11Z"
                           fill="#052C65"/>
@@ -43,22 +42,30 @@
                Доходы & Расходы
             </a>
         </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link  text-color" >
-                Категории
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item text-color" href="#">Доходы</a>
-                <a class="dropdown-item text-color" href="#">Расходы</a>
+        <li class="nav-item">
+            <div class="dropdown">
+                <a class="btn nav-link dropdown-link d-flex align-items-center justify-content-between text-color "
+                   href="javascript:void(0)" role="button" data-bs-toggle="dropdown">
+                    Категории
+                    <svg xmlns="http://www.w3.org/2000/svg" width="7" height="14" viewBox="0 0 7 14" fill="none" class="arrow svg">
+                        <g id="Icon">
+                            <path id="Path" fill-rule="evenodd" clip-rule="evenodd" d="M0.145185 13.3541C0.0511431 13.2603 -0.00170898 13.1329 -0.00170898 13.0001C-0.00170898 12.8673 0.0511431 12.7399 0.145185 12.6461L5.79218 7.00008L0.145185 1.35408C0.0187128 1.22761 -0.0306802 1.04327 0.0156118 0.87051C0.0619038 0.697746 0.196848 0.562802 0.369612 0.51651C0.542376 0.470218 0.726713 0.51961 0.853185 0.646083L6.85318 6.64608C6.94723 6.73989 7.00008 6.86726 7.00008 7.00008C7.00008 7.13291 6.94723 7.26028 6.85318 7.35408L0.853185 13.3541C0.759381 13.4481 0.632012 13.501 0.499185 13.501C0.366358 13.501 0.238989 13.4481 0.145185 13.3541Z" fill="#052C65"/>
+                        </g>
+                    </svg>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/income" >Доходы</a></li>
+                    <li><a class="dropdown-item" href="/expenses" >Расходы</a></li>
+                </ul>
             </div>
         </li>
     </ul>
     <div class="mt-auto mb-3 text-center">
-        <div class="balance text-color text-color">
+        <div class="balance text-color">
             <p>Баланс:</p> <span> 500$</span>
         </div>
         <div class="profile mt-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">-->
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
                 <circle cx="18" cy="18" r="18" fill="#D9D9D9"/>
                 <path d="M18 18C19.0609 18 20.0783 17.5786 20.8284 16.8284C21.5786 16.0783 22 15.0609 22 14C22 12.9391 21.5786 11.9217 20.8284 11.1716C20.0783 10.4214 19.0609 10 18 10C16.9391 10 15.9217 10.4214 15.1716 11.1716C14.4214 11.9217 14 12.9391 14 14C14 15.0609 14.4214 16.0783 15.1716 16.8284C15.9217 17.5786 16.9391 18 18 18ZM20.6667 14C20.6667 14.7072 20.3857 15.3855 19.8856 15.8856C19.3855 16.3857 18.7072 16.6667 18 16.6667C17.2928 16.6667 16.6145 16.3857 16.1144 15.8856C15.6143 15.3855 15.3333 14.7072 15.3333 14C15.3333 13.2928 15.6143 12.6145 16.1144 12.1144C16.6145 11.6143 17.2928 11.3333 18 11.3333C18.7072 11.3333 19.3855 11.6143 19.8856 12.1144C20.3857 12.6145 20.6667 13.2928 20.6667 14ZM26 24.6667C26 26 24.6667 26 24.6667 26H11.3333C11.3333 26 10 26 10 24.6667C10 23.3333 11.3333 19.3333 18 19.3333C24.6667 19.3333 26 23.3333 26 24.6667ZM24.6667 24.6613C24.6653 24.3333 24.4613 23.3467 23.5573 22.4427C22.688 21.5733 21.052 20.6667 18 20.6667C14.9467 20.6667 13.312 21.5733 12.4427 22.4427C11.5387 23.3467 11.336 24.3333 11.3333 24.6613H24.6667Z"
                       fill="#6C757D"/>
@@ -69,5 +76,12 @@
 </div>
 
 
-<div id="content-layout"></div>
+
+
+
+<div class="content-wrapper" id="content-layout"></div>
+
+
+
+
 

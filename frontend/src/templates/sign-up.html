@@ -7,39 +7,53 @@
         </svg>
         </div>
         <h1 class="h3 fw-normal text-center title" >Создайте аккаунт</h1>
-
-        <div class="input-group style">
-            <div class="input-group mb-1">
-                <span class="input-group-text" id="email"><i class="fa-regular fa-envelope-open icon"></i></span>
-                <input type="text" class="form-control" placeholder="Электронная почта" aria-label="email" aria-describedby="basic-addon1">
-            </div>
-        </div>
-
-        <div class="input-group style">
-            <div class="input-group mb-1">
-                <span class="input-group-text" id="name"><i class="fa-regular fa-user icon"></i></span>
-                <input type="text" class="form-control" placeholder="ФИО" aria-label="email" aria-describedby="basic-addon1">
-            </div>
-        </div>
+        <div id="common-error-sign-up" class="error text-center mb-3">Проверьте заполненные поля</div>
 
 
         <div class="input-group style">
             <div class="input-group mb-1">
-                <span class="input-group-text" id="password"><i class="fa-solid fa-lock icon"></i></span>
-                <input type="password" class="form-control text" placeholder="Пароль" aria-label="password" aria-describedby="basic-addon1">
+                <span class="input-group-text" ><i class="fa-regular fa-user icon"></i></span>
+                <input type="text" class="form-control" placeholder="Имя" aria-label="name" aria-describedby="basic-addon1" id="name">
             </div>
+<!--            <span id="name-error" class="error">Введите корректное имя с заглавной буквы</span>-->
         </div>
 
         <div class="input-group style">
+            <div class="input-group mb-1">
+                <span class="input-group-text" ><i class="fa-regular fa-user icon"></i></span>
+                <input type="text" class="form-control" placeholder="Фамилия" aria-label="last-name" aria-describedby="basic-addon1" id="lastName">
+            </div>
+<!--            <span id="lastname-error" class="error">Введите корректную фамилию с заглавной буквы</span>-->
+        </div>
+
+
+        <div class="input-group style">
+            <div class="input-group mb-1">
+                <span class="input-group-text" ><i class="fa-regular fa-envelope-open icon"></i></span>
+                <input type="text" class="form-control" placeholder="Электронная почта" aria-label="email" aria-describedby="basic-addon1" id="email">
+            </div>
+<!--            <span id="email-error" class="error">Введите корректный E-mail</span>-->
+        </div>
+
+        <div class="input-group style">
+            <div class="input-group mb-1">
+                <span class="input-group-text"><i class="fa-solid fa-lock icon"></i></span>
+                <input type="password" class="form-control text" placeholder="Пароль" aria-label="password" aria-describedby="basic-addon1"  id="password">
+            </div>
+<!--            <span id="password-error" class="error">Введите корректный пароль</span>-->
+        </div>
+
+        <div class="input-group style" >
             <div class="input-group mb-3">
-                <span class="input-group-text" id="confirm-password"><i class="fa-solid fa-lock icon"></i></span>
-                <input type="password" class="form-control text" placeholder="Подтверждение пароля" aria-label="password" aria-describedby="basic-addon1">
+                <span class="input-group-text"><i class="fa-solid fa-lock icon"></i></span>
+                <input type="password" class="form-control text" placeholder="Подтверждение пароля" aria-label="password" aria-describedby="basic-addon1"  id="confirm-password">
             </div>
+<!--            <span id="repeate-password-error" class="error">Подтвердите пароль</span>-->
         </div>
 
 
 
-        <button class="btn btn-primary w-100 py-2" type="submit">Войти</button>
+        <button class="btn btn-primary w-100 py-2" type="button" id="process-button" disabled>Войти</button>
         <p class="link-page">Уже есть аккаунт? <a href="/login">Войдите в систему</a></p>
 
     </form>

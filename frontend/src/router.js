@@ -1,6 +1,5 @@
 import {Main} from "./components/main";
-import {Login} from "./components/login";
-import {SignUp} from "./components/sign-up";
+import {Form} from "./components/form";
 import {IncomeExpenses} from "./components/income-expenses";
 
 export class Router {
@@ -9,6 +8,17 @@ export class Router {
         this.contentPageElement = document.getElementById('content');
         this.initEvents();
         this.routes = [
+
+            {
+                route: '/login',
+                title: 'Авторизация',
+                filePathTemplate: '/templates/login.html',
+                useLayout: false,
+                load: () => {
+                    new Form(this.openNewRoute.bind(this), 'login');
+                }
+            },
+
             {
                 route: '/',
                 title: 'Главная',
@@ -16,18 +26,6 @@ export class Router {
                 useLayout: '/templates/layout.html',
                 load: () => {
                     new Main();
-                }
-            },
-            {
-                route: '/login',
-                title: 'Авторизация',
-                filePathTemplate: '/templates/login.html',
-                regex: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$/,
-                element: null,
-                valid: false,
-                useLayout: false,
-                load: () => {
-                    new Login();
                 }
             },
             {
@@ -108,7 +106,7 @@ export class Router {
                 filePathTemplate: '/templates/sign-up.html',
                 useLayout: false,
                 load: () => {
-                    new SignUp();
+                    new Form(this.openNewRoute.bind(this), 'sign-up');
                 }
             },
         ]
@@ -117,11 +115,39 @@ export class Router {
     initEvents() {
         window.addEventListener('DOMContentLoaded', this.activateRoute.bind(this));
         window.addEventListener('popstate', this.activateRoute.bind(this));
-        // document.addEventListener('click', this.clickHandler.bind(this));
+        document.addEventListener('click', this.clickHandler.bind(this));
 
     }
 
+    async openNewRoute(url) {
+        const currentRoute = window.location.pathname;
+        history.pushState({}, '', url);
+        await this.activateRoute(null, currentRoute)
+    }
+
+    async clickHandler(e) {
+        let element = null
+        if (e.target.nodeName === 'A') {
+            element = e.target
+        } else if (e.target.parentNode.nodeName === 'A') {
+            element = e.target.parentNode
+        }
+
+
+        if (element) {
+            e.preventDefault()
+            const currentRoute = window.location.pathname;
+            const url = element.href.replace(window.location.origin, '')
+            if (!url ||  (currentRoute === url.replace('#', ''))|| url.startsWith('javascript:void(0)')) {
+                return;
+            }
+
+            await this.openNewRoute(url)
+        }
+    }
+
     async activateRoute() {
+
         const urlRoute = window.location.pathname;
         const newRoute = this.routes.find(item => item.route === urlRoute);
 
@@ -129,6 +155,8 @@ export class Router {
             if (newRoute.title) {
                 this.titlePageElement.innerText = newRoute.title + ' |  Lumincoin Finance'
             }
+
+
 
             if (newRoute.filePathTemplate) {
                 let contentBlock = this.contentPageElement
@@ -139,13 +167,16 @@ export class Router {
                 contentBlock.innerHTML = await fetch(newRoute.filePathTemplate).then(response => response.text())
 
             }
+
             if (newRoute.load && typeof newRoute.load === 'function') {
                 newRoute.load()
             }
 
         } else {
-            window.location = '/404'
+            console.log("Not route Found")
+            history.pushState({}, '', '/');
+            await this.activateRoute()
         }
     }
 
-}
+ }

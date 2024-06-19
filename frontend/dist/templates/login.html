@@ -1,11 +1,4 @@
-login
-
-<a href="/">main</a>
-<a href="/404">404</a>
-<a href="/login">login</a>
-<a href="/sign-up">sign-up</a>
-
-<main class="form-signin w-100 m-auto d-flex justify-content-center">
+<main class="form-signin w-100 m-auto d-flex justify-content-center" >
     <form style="width: 397px" class="form">
         <div class="logo-autorize">
             <svg xmlns="http://www.w3.org/2000/svg" width="176" height="70" viewBox="0 0 176 70" fill="none">
@@ -15,22 +8,24 @@ login
         </div>
 
         <h1 class="h3 fw-normal text-center title" >Вход</h1>
+<!--        <div id="common-error" class="error text-center mb-3">Неправильно e-mail или пароль </div>-->
 
         <div class="input-group style">
             <div class="input-group mb-1">
                 <span class="input-group-text" id="basic-addon1"><i class="fa-regular fa-envelope-open icon"></i></span>
-                <input type="text" class="form-control" placeholder="Электронная почта" aria-label="Username" aria-describedby="basic-addon1">
+                <input type="text" class="form-control" placeholder="Электронная почта" aria-label="Username" aria-describedby="basic-addon1" id="email">
             </div>
+            <span id="email-error" class="error">Введите корректный E-mail</span>
 
         </div>
 
 
         <div class="input-group style">
             <div class="input-group mb-3">
-                <span class="input-group-text" id="password"><i class="fa-solid fa-lock icon"></i></span>
-                <input type="password" class="form-control text" placeholder="Пароль" aria-label="password" aria-describedby="basic-addon1">
+                <span class="input-group-text" id="passwordd"><i class="fa-solid fa-lock icon"></i></span>
+                <input type="password" class="form-control text" placeholder="Пароль" aria-label="password" aria-describedby="basic-addon1" id="password">
             </div>
-
+            <span id="password-error" class="error">Введите корректный пароль</span>
         </div>
 
 
@@ -42,7 +37,7 @@ login
             </label>
         </div>
 
-        <button class="btn btn-primary w-100 py-2" type="submit">Войти</button>
+        <button class="btn btn-primary w-100 py-2" type="button" id="process-button" disabled>Войти</button>
         <p class="link-page">Ещё нет аккаунта? <a href="/sign-up">Пройдите регистрацию</a></p>
 
     </form>

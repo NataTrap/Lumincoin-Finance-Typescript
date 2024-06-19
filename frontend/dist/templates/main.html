@@ -1,11 +1,48 @@
-<div class="container">
+<div class="container-fluid">
     <div class="title">
         <h1>Главная</h1>
     </div>
 
-    <div class="charts">
-        <canvas id="myPieChart"></canvas>
+    <a href="/login">login</a>
+
+    <div class="nav">
+        <div class="btn-group button" role="group" aria-label="Basic outlined example">
+            <button type="button" class="btn btn-outline-secondary such-button">Сегодня</button>
+            <button type="button" class="btn btn-outline-secondary such-button">Неделя</button>
+            <button type="button" class="btn btn-outline-secondary such-button">Месяц</button>
+            <button type="button" class="btn btn-outline-secondary such-button">Год</button>
+            <button type="button" class="btn btn-outline-secondary such-button">Все</button>
+            <button type="button" class="btn btn-outline-secondary such-button">Интервал</button>
+            <div class="date">
+                <span>с </span>
+                <button type="button" class="btn btn-link">Дата</button>
+                <span> по</span>
+                <button type="button" class="btn btn-link">Дата</button>
+            </div>
+        </div>
+
     </div>
+
+<div class="charts">
+    <div class="charts-income">
+        <h1 class="chart-title">Доходы</h1>
+        <canvas id="income" width="400" height="400"></canvas>
+    </div>
+
+    <div class="line">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1" height="450" viewBox="0 0 1 450" fill="#D9D9D9">
+            <rect width="1" height="450" fill="#D9D9D9"/>
+        </svg>
+
+    </div>
+
+    <div class="charts-expenses">
+        <h1 class="chart-title">Расходы</h1>
+        <canvas id="expenses" width="400" height="400"></canvas>
+    </div>
+</div>
+
+
 
 </div>
 

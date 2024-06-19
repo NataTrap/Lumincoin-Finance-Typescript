@@ -55,5 +55,14 @@
   text-align: center;
 }
 
+.error {
+  font-size: 14px;
+  color: red;
+  display: none;
+}
 
+#process-button:disabled {
+
+  cursor: not-allowed;
+}
 
