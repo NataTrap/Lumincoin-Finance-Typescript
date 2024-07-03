@@ -1,11 +1,14 @@
 import config from "../config/config";
+import {AuthUtils} from "../utils/auth-utils";
+import {HttpUtils} from "../utils/http-utils";
 
 export class Form {
     constructor(openNewRote, page) {
         this.openNewRoute = openNewRote
         this.page = page
 
-        console.log("SignUp")
+
+
 
         this.processElement = document.getElementById('process-button')
         this.passwordElement = document.getElementById('password');
@@ -41,14 +44,14 @@ export class Form {
                     name: 'name',
                     id: 'name',
                     element: null,
-                    regex: /^[A-Z][a-z]+\s*$/,
+                    // regex: /^[A-Z][А-Я][a-z][а-я]+\s*$/,
                     valid: false,
                 },
                 {
                     name: 'lastName',
                     id: 'lastName',
                     element: null,
-                    regex: /^[A-Z][a-z]+\s*$/,
+                    // regex: /^[A-Z][А-Я][a-z][а-я]+\s*$/,
                     valid: false,
                 }
             )
@@ -73,16 +76,9 @@ export class Form {
             }
         });
 
-
-        // this.processElement = document.getElementById('process-button');
         this.processElement.onclick = function () {
             that.processForm();
         }
-
-
-        // this.processElement.addEventListener('click', this.processForm.bind(this))
-
-
     }
 
 
@@ -95,6 +91,16 @@ export class Form {
             element.style.borderColor = '';
             field.valid = true;
         }
+
+        if (this.page === 'sign-up') {
+            this.confirmPasswordElement.style.borderColor = ''
+            if (this.passwordElement.value === this.confirmPasswordElement.value) {
+                this.confirmPasswordElement.style.borderColor = ''
+            } else {
+                this.confirmPasswordElement.style.borderColor = 'red'
+            }
+        }
+
         this.validateForm()
     }
 
@@ -107,13 +113,7 @@ export class Form {
                 this.processElement.setAttribute('disabled', 'disabled')
             }
 
-            if (this.page === 'sign-up') {
-                if (this.passwordElement.value === this.confirmPasswordElement.value) {
-                    this.confirmPasswordElement.style.borderColor = ''
-                } else {
-                    this.confirmPasswordElement.style.borderColor = 'red'
-                }
-            }
+
 
             return validForm
     }
@@ -122,40 +122,38 @@ export class Form {
         if (this.validateForm()) {
             try {
                 if (this.page === 'sign-up') {
+
+
                     this.commonErrorSignUpElement.style.display = 'none';
-                    const response = await fetch(config.api + '/signup', {
-                        method: 'POST',
-                        headers: {
-                            'Content-type': 'application/json',
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            name: this.nameElement.value,
-                            lastName: this.lastNameElement.value,
-                            email: this.emailElement.value,
-                            password: this.passwordElement.value,
-                            passwordRepeat: this.passwordElement.value,
 
-                        })
-                    });
+                    let result = await HttpUtils.request('/signup', 'POST', false, {
+                        name: this.nameElement.value,
+                        lastName: this.lastNameElement.value,
+                        email: this.emailElement.value,
+                        password: this.passwordElement.value,
+                        passwordRepeat: this.passwordElement.value,
 
-                    const result = await response.json()
-                    console.log(result)
+                    } )
 
-                    if (result.error || !result.user || (result.user && (!result.user.id || !result.user.email || !result.user.name || !result.user.lastName))) {
+                    if (result.error || !result.response || (result.response && ( !result.response.user || (result.response.user && (!result.response.user.id || !result.response.user.email || !result.response.user.name || !result.response.user.lastName))))) {
                         this.commonErrorSignUpElement.style.display = 'block';
                         throw new Error(result.message);
                     }
 
-                    localStorage.setItem('userInfo', JSON.stringify({
-                        id: result.user.id,
-                        email: result.user.email,
-                        name: result.user.name,
-                        lastName: result.user.lastName
 
-                    }))
 
-                    this.openNewRoute('/')
+                    AuthUtils.setAuthInfo(null, null, {
+                        name: result.response.user.name,
+                        email: this.emailElement.value,
+                        lastName: result.response.user.lastName,
+                        id: result.response.user.id
+                    })
+
+                    if (localStorage.getItem('accessToken')) {
+                        return this.openNewRoute('/login')
+                    }
+
+                    this.openNewRoute('/login')
 
                 }
             } catch (error) {
@@ -166,38 +164,28 @@ export class Form {
 
 
         if (this.page === 'login') {
-            this.commonErrorLoginElement.style.display = 'none'
+
+            // this.commonErrorLoginElement.style.display = 'none'
             try {
-                const response = await fetch(config.api + '/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: this.emailElement.value,
-                        password: this.passwordElement.value,
-                        rememberMe: this.rememberMeElement.checked
-                    })
-                });
 
-                const result = await response.json()
-                console.log(result)
+                const result = await HttpUtils.request('/login', 'POST', false, {
+                    email: this.emailElement.value,
+                    password: this.passwordElement.value,
+                    rememberMe: this.rememberMeElement.checked
+                })
 
-                if (result.error || !result.tokens || (result.tokens && (!result.tokens.accessToken || !result.tokens.refreshToken))
-                    || !result.user || (result.user && (!result.user.name || !result.user.lastName || !result.user.id))) {
-                    this.commonErrorLoginElement.style.display = 'block'
+                if (result.error || !result.response || (result.response && ( !result.response.tokens || (result.response.tokens && (!result.response.tokens.accessToken || !result.response.tokens.refreshToken || !result.response.user || (result.response.user && (!result.response.user.name || !result.response.user.lastName || !result.response.user.id) )))))) {
+                    // this.commonErrorSignUpElement.style.display = 'block';
                     throw new Error(result.message);
                 }
 
 
-                localStorage.setItem('accessToken', result.tokens.accessToken)
-                localStorage.setItem('refreshToken', result.tokens.refreshToken)
-                localStorage.setItem('userInfo', JSON.stringify({
-                    name: result.user.name,
-                    lastName: result.user.lastName,
-                    id: result.user.id
-                }))
+                AuthUtils.setAuthInfo(result.response.tokens.accessToken, result.response.tokens.refreshToken, {
+                    name: result.response.user.name,
+                    lastName: result.response.user.lastName,
+                    id: result.response.user.id
+                })
+
 
                 this.openNewRoute('/')
 

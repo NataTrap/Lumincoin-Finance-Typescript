@@ -66,3 +66,31 @@
   cursor: not-allowed;
 }
 
+
+#cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  .card {
+    width: 350px;
+    .card-body {
+      a{
+        margin-right: 10px;
+      }
+
+    }
+  }
+}
+
+#new-element{
+  text-decoration: none;
+  /* align-items: center; */
+  color: #6C757D;
+  font-size: 23px;
+  display: flex;
+  justify-content: center;
+  /* text-align: center; */
+  margin-top: 17px;
+}
+

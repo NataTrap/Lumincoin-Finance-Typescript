@@ -3,29 +3,32 @@
         <h1>Создание дохода/расхода</h1>
     </div>
 
-    <div class="create-income">
-        <div style="width: 397px;  margin-bottom: 10px; height: 38px">
-            <label for="type" class="form-label"></label>
-            <input type="text" class="form-control" id="type" placeholder="Тип...">
+    <div class="create-income select" style="margin-top: 60px">
+        <select class="form-select" id="type-select" aria-label="Default select example" style="width: 397px; color: #6C757D">
+            <option value="type" selected>Тип...</option>
+            <option value="income" >Доход</option>
+            <option value="expense">Расход</option>
+        </select>
+        <div class="select" style="width: 397px; margin-top: 10px; height: 38px">
+            <select class="form-select" id="category" aria-label="Default select example">
+            </select>
         </div>
-        <div style="width: 397px; margin-bottom: 10px; height: 38px">
-            <label for="category" class="form-label"></label>
-            <input type="text" class="form-control" id="category" placeholder="Категория...">
-        </div>
-        <div style="width: 397px; margin-bottom: 10px; height: 38px">
+        <div style="width: 397px; margin-top: -13px; ">
             <label for="sum" class="form-label"></label>
             <input type="text" class="form-control" id="sum" placeholder="Сумма в $...">
         </div>
-        <div style="width: 397px;  margin-bottom: 10px; height: 38px">
+        <div style="width: 397px; margin-top: -13px">
             <label for="date" class="form-label"></label>
-            <input type="text" class="form-control" id="date" placeholder="Дата...">
+            <input type="text" class="form-control" id="date" placeholder="Дата..."  onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'">
         </div>
-        <div style="width: 397px; margin-bottom: 20px; height: 38px">
+        <div style="width: 397px;margin-top: -13px">
             <label for="coment" class="form-label"></label>
             <input type="text" class="form-control" id="coment" placeholder="Комментарий...">
         </div>
 
-        <button class="btn btn-success" style="margin-right: 10px; margin-top: 20px">Создать</button>
-        <button class="btn btn-danger" style="margin-top: 20px">Удалить</button>
+        <button class="btn btn-success" style="margin-right: 10px; margin-top: 20px" id="create-button">Создать</button>
+        <a href="/income-expenses" type="button" class="btn btn-danger" style="margin-top: 20px">Удалить</a>
     </div>
 </div>
+
+
