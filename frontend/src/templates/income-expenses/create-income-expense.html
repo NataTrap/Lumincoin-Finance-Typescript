@@ -6,7 +6,7 @@
     <div class="create-income select" style="margin-top: 60px">
         <select class="form-select" id="type-select" aria-label="Default select example" style="width: 397px; color: #6C757D">
             <option value="type" selected>Тип...</option>
-            <option value="income" >Доход</option>
+            <option value="income" class="income">Доход</option>
             <option value="expense">Расход</option>
         </select>
         <div class="select" style="width: 397px; margin-top: 10px; height: 38px">
@@ -22,12 +22,12 @@
             <input type="text" class="form-control" id="date" placeholder="Дата..."  onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'">
         </div>
         <div style="width: 397px;margin-top: -13px">
-            <label for="coment" class="form-label"></label>
-            <input type="text" class="form-control" id="coment" placeholder="Комментарий...">
+            <label for="comment" class="form-label"></label>
+            <input type="text" class="form-control" id="comment" placeholder="Комментарий...">
         </div>
 
         <button class="btn btn-success" style="margin-right: 10px; margin-top: 20px" id="create-button">Создать</button>
-        <a href="/income-expenses" type="button" class="btn btn-danger" style="margin-top: 20px">Удалить</a>
+        <a href="/income-expenses" type="button" class="btn btn-danger" style="margin-top: 20px">Отменить</a>
     </div>
 </div>
 

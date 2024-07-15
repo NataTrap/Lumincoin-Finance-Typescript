@@ -1,4 +1,5 @@
 import {HttpUtils} from "../utils/http-utils";
+import {Income} from "./income";
 
 export class EditIncome {
     constructor(openNewRoute) {
@@ -10,8 +11,15 @@ export class EditIncome {
         if (!this.id) {
             return this.openNewRoute('/');
         }
+
+        this.title =  urlParams.get('title')
         this.inputElement = document.querySelector('input');
         document.getElementById('save-button').addEventListener('click', this.editCategory.bind(this));
+        this.showValue()
+    }
+
+    showValue () {
+        let input = document.getElementById('formGroupExampleInput').value = this.title
     }
 
 
@@ -26,6 +34,8 @@ export class EditIncome {
         }
         return isValid;
     }
+
+
 
     async editCategory(e){
         e.preventDefault;
@@ -43,4 +53,6 @@ export class EditIncome {
             return this.openNewRoute('/income');
         }
     }
+
+
 }

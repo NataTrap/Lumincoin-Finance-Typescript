@@ -1,7 +1,51 @@
+// export class DateFilter { //отвечает за выбор периода и интервалов дат
+//     constructor() {
+//
+//         this.weekElement = document.getElementById('week')
+//         this.todayElement = document.getElementById('today')
+//
+//         const sub1month = new Date();
+//         sub1month.setMonth(sub1month.getMonth() - 1);
+//         console.log(sub1month)
+//
+//
+//         const sub1day = new Date();
+//         sub1day.setDate(sub1day.getDate() - 1);
+//         console.log(sub1day)
+//
+//
+//         this.weekElement.addEventListener('click', this.dateWeek.bind(this))
+//         this.todayElement.addEventListener('click', this.dateToday.bind(this))
+//     }
+//
+//     dateWeek() {
+//
+//         this.weekElement.classList.add('active')
+//         const sub1week = new Date();
+//         sub1week.setDate(sub1week.getDate() - 7);
+//         console.log(sub1week) // -1 неделя
+//     }
+//
+//
+//     dateToday () {
+//         this.todayElement.classList.add('active')
+//         const sub1day = new Date();
+//         sub1day.setDate(sub1day.getDate());
+//         console.log(sub1day)
+//     }
+//
+//
+//
+//
+// }
+
+
+
+
 export class DateFilter { //отвечает за выбор периода и интервалов дат
     constructor(getOperations) {
         this.getOperations = getOperations; //при изменении фильтра делает новый запрос на сервер(метод из файла income-expenses.js)
-        this.periodButtons = document.querySelectorAll('.diagram-btn');
+        this.periodButtons = document.querySelectorAll('.such-button');
         this.startDatePicker = document.getElementById('start-date');
         this.endDatePicker = document.getElementById('end-date');
         this.initButtonsListeners();
@@ -19,14 +63,14 @@ export class DateFilter { //отвечает за выбор периода и �
         });
 
         this.startDatePicker.addEventListener('change', () => {
-            const activeButton = document.querySelector('.diagram-btn.active');
+            const activeButton = document.querySelector('.such-button.active');
             if (activeButton && activeButton.getAttribute('data-period') === 'interval') {
                 this.filterChange('interval');
             }
         });
 
         this.endDatePicker.addEventListener('change', () => {
-            const activeButton = document.querySelector('.diagram-btn.active');
+            const activeButton = document.querySelector('.such-button.active');
             if (activeButton && activeButton.getAttribute('data-period') === 'interval') {
                 this.filterChange('interval');
             }

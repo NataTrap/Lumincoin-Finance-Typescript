@@ -8,8 +8,12 @@ export class EditExpense {
         if (!this.id) {
             return this.openNewRoute('/');
         }
+        this.title =  urlParams.get('title')
         this.inputElement = document.querySelector('input');
+
+
         document.getElementById('save-button').addEventListener('click', this.editCategory.bind(this));
+        this.showValue()
     }
 
 
@@ -24,6 +28,11 @@ export class EditExpense {
         }
         return isValid;
     }
+
+    showValue () {
+        let input = document.getElementById('formGroupExampleInput').value = this.title
+    }
+
 
     async editCategory(e){
         e.preventDefault;

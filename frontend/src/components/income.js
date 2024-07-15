@@ -11,7 +11,6 @@ export class Income {
 
     async getIncome() {
         const result = await HttpUtils.request('/categories/income')
-
         if(result.redirect){
             return this.openNewRoute(result.redirect);
         }
@@ -26,9 +25,7 @@ export class Income {
     }
 
     getIncomeList(income) {
-
         const cardsElement = document.getElementById('cards');
-
         for (let i = 0; i < income.length; i++) {
 
             const cardElement = document.createElement('div');
@@ -38,11 +35,12 @@ export class Income {
             cardBodyElement.className = 'card-body';
 
             const cardTitleElement = document.createElement('h5');
+            cardTitleElement.id = 'card-title'
             cardTitleElement.className = 'card-title';
             cardTitleElement.innerHTML = income[i].title;
 
             const editElement = document.createElement('a');
-            editElement.setAttribute('href', '/edit-income?id=' + income[i].id);
+            editElement.setAttribute('href', '/edit-income?id=' + income[i].id + '&title=' + income[i].title );
             editElement.setAttribute('type', 'button');
             editElement.className = 'btn btn-primary';
             editElement.innerHTML = 'Редактировать';
@@ -68,6 +66,7 @@ export class Income {
 
         }
 
+
         const cardElement = document.createElement('div');
         cardElement.className = 'card';
 
@@ -85,7 +84,6 @@ export class Income {
 
         this.categoryDeleteEventListeners()
     }
-
     categoryDeleteEventListeners() { //передаем id операции в каждую кнопку удаления
         const deleteButtons = document.querySelectorAll('.delete-btn');
         for (let i = 0; i < deleteButtons.length; i++) {

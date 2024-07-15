@@ -7,24 +7,24 @@ export class Expense {
         this.id = urlParams.get('id');
 
         this.getExpense().then()
-
     }
 
-    async getExpense(){ //запрос на получение категорий расходов
-        const result = await HttpUtils.request('/categories/expense');
+    async getExpense() {
+        const result = await HttpUtils.request('/categories/expense')
         if(result.redirect){
             return this.openNewRoute(result.redirect);
         }
 
         if (result.error || !result.response || (result.response && result.response.error)) {
-            return alert('Возникла ошибка при запросе категорий расходов');
+            console.log(result.response.message)
+            return alert('Возникла ошибка при запросе. Обратитесь в поддержку ')
         }
 
-        this.showExpenseList(result.response);
+        this.getExpenseList(result.response)
+
     }
 
-
-    showExpenseList(expense) { //рисуем блоки с категориями
+    getExpenseList(expense) {
         const cardsElement = document.getElementById('cards');
         for (let i = 0; i < expense.length; i++) {
 
@@ -35,6 +35,7 @@ export class Expense {
             cardBodyElement.className = 'card-body';
 
             const cardTitleElement = document.createElement('h5');
+            cardTitleElement.id = 'card-title'
             cardTitleElement.className = 'card-title';
             cardTitleElement.innerHTML = expense[i].title;
 
@@ -47,26 +48,24 @@ export class Expense {
             const deleteElement = document.createElement('a');
             deleteElement.setAttribute('href', 'javascript:void(0)');
             deleteElement.setAttribute('type', 'button');
-            deleteElement.setAttribute('data-id', expense[i].id);
             deleteElement.setAttribute('data-bs-toggle', 'modal');
             deleteElement.setAttribute('data-bs-target', '#exampleModalCenter');
-            deleteElement.className = 'btn btn-danger delete-btn ';
+            deleteElement.setAttribute('data-id', expense[i].id);
+            deleteElement.className = 'btn btn-danger delete-btn';
             deleteElement.innerHTML = 'Удалить';
 
             const cardRowElement = document.getElementById('row')
-            //
-            // console.log(cardsElement)
-            // console.log(cardElement)
 
             cardBodyElement.appendChild(cardTitleElement);
             cardBodyElement.appendChild(editElement);
             cardBodyElement.appendChild(deleteElement);
             cardElement.appendChild(cardBodyElement);
             cardsElement.appendChild(cardElement);
-            cardRowElement.appendChild(cardsElement)
+            cardRowElement.appendChild(cardsElement);
 
 
         }
+
 
         const cardElement = document.createElement('div');
         cardElement.className = 'card';
@@ -83,8 +82,7 @@ export class Expense {
         cardElement.appendChild(cardBodyElement);
         cardsElement.appendChild(cardElement);
 
-        this.categoryDeleteEventListeners();
-
+        this.categoryDeleteEventListeners()
     }
     categoryDeleteEventListeners() { //передаем id операции в каждую кнопку удаления
         const deleteButtons = document.querySelectorAll('.delete-btn');

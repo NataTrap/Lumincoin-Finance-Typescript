@@ -1,15 +1,11 @@
-import config from "../config/config";
 import {AuthUtils} from "../utils/auth-utils";
 import {HttpUtils} from "../utils/http-utils";
 
 export class Form {
     constructor(openNewRote, page) {
         this.openNewRoute = openNewRote
+
         this.page = page
-
-
-
-
         this.processElement = document.getElementById('process-button')
         this.passwordElement = document.getElementById('password');
         this.nameElement = document.getElementById('name')
@@ -113,8 +109,6 @@ export class Form {
                 this.processElement.setAttribute('disabled', 'disabled')
             }
 
-
-
             return validForm
     }
 
@@ -122,7 +116,6 @@ export class Form {
         if (this.validateForm()) {
             try {
                 if (this.page === 'sign-up') {
-
 
                     this.commonErrorSignUpElement.style.display = 'none';
 
@@ -139,6 +132,7 @@ export class Form {
                         this.commonErrorSignUpElement.style.display = 'block';
                         throw new Error(result.message);
                     }
+
 
 
 
@@ -174,10 +168,13 @@ export class Form {
                     rememberMe: this.rememberMeElement.checked
                 })
 
-                if (result.error || !result.response || (result.response && ( !result.response.tokens || (result.response.tokens && (!result.response.tokens.accessToken || !result.response.tokens.refreshToken || !result.response.user || (result.response.user && (!result.response.user.name || !result.response.user.lastName || !result.response.user.id) )))))) {
+                if (result.error || !result.response || (result.response && ( !result.response.tokens || (result.response.tokens && (!result.response.tokens.accessToken || !result.response.tokens.refreshToken || !result.response.user ||
+                    (result.response.user && (!result.response.user.name || !result.response.user.lastName || !result.response.user.id) )))))) {
                     // this.commonErrorSignUpElement.style.display = 'block';
                     throw new Error(result.message);
                 }
+
+
 
 
                 AuthUtils.setAuthInfo(result.response.tokens.accessToken, result.response.tokens.refreshToken, {
@@ -187,11 +184,17 @@ export class Form {
                 })
 
 
+
                 this.openNewRoute('/')
 
             } catch (error) {
                 return console.log(error)
             }
+
+
+
+
+
         }
 
 

@@ -4,9 +4,6 @@
   background-color: #ffffff;
   height: 100%;
   position: fixed;
-  //display: flex;
-  //flex-direction: column;
-  //justify-content: space-between;
   border-right: 1px solid #ddd;
 }
 
@@ -49,13 +46,39 @@
   }
 }
 
+
+.nav-link:active {
+  background-color: #007bff;
+  color: white;
+
+}
+
+
+.nav-ul {
+  .nav-item {
+    .svg {
+      .path:active {
+        fill: white;
+      }
+    }
+  }
+}
+
+
+
+.logout{
+  color: #052C65;
+}
+
+.logout:hover {
+  color: white;
+}
+
 .dropdown {
-
-
   .dropdown:active {
     rotate: 45deg;
-
   }
+
   .dropdown-menu {
     width: 100%;
     border: 1px solid #007bff;
@@ -70,7 +93,6 @@
     }
   }
 }
-
 
 
 .balance {

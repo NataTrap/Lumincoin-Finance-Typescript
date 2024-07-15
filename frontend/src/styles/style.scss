@@ -85,12 +85,34 @@
 
 #new-element{
   text-decoration: none;
-  /* align-items: center; */
   color: #6C757D;
   font-size: 23px;
   display: flex;
   justify-content: center;
-  /* text-align: center; */
   margin-top: 17px;
+  margin-bottom: 17px;
 }
 
+.text-balance {
+  margin-right: 2px;
+}
+
+#balance {
+  color: #007bff;
+}
+
+
+
+.s {
+  margin: 0 10px;
+}
+.p {
+  margin: 0 10px;
+}
+
+.trelement {
+  text-align: center;
+}
+.tr-header{
+  text-align: center;
+}

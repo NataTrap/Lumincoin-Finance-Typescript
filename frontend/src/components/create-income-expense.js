@@ -1,31 +1,31 @@
 import {HttpUtils} from "../utils/http-utils";
 
 export class CreateIncomeExpense {
-
     constructor(openNewRoute) {
         this.openNewRoute = openNewRoute;
-        this.incomeOperation = null; //сюда сохраним категории доходов
-        this.expenseOperation = null; //сюда сохраним категории расходов
+        this.incomeOperation = null;
+        this.expenseOperation = null;
         this.typeSelectElement = document.getElementById('type-select');
         this.categorySelectElement = document.getElementById('category');
         this.sumElement = document.getElementById('sum');
         this.dateElement = document.getElementById('date');
-        this.commentElement = document.getElementById('coment');
+        this.commentElement = document.getElementById('comment');
         this.getExpenseCategories().then();
         this.getIncomeCategories().then();
-
         this.typeSelectElement.addEventListener('change', () => { //если юзер поменял тип в селекте, то меняем наполнение для категорий
             this.showCategories(this.incomeOperation, this.expenseOperation);
-        });
-
+        })
         document.getElementById('create-button').addEventListener('click', this.saveOperation.bind(this));
     }
+
+
 
     async getIncomeCategories() { //получаем категории для доходов
         const result = await HttpUtils.request('/categories/income');
         this.incomeOperation = result.response;
         this.showCategories(this.incomeOperation, []);
     }
+
 
     async getExpenseCategories() { //подучаем категории для расходов
         const result = await HttpUtils.request('/categories/expense');
@@ -35,13 +35,16 @@ export class CreateIncomeExpense {
 
     showCategories(incomeOperation, expenseOperation) { //наполняем селекты в зависимости от выбранного типа
         this.categorySelectElement.innerHTML = '';
+
         if (this.typeSelectElement.value === 'income') {
             for (let i = 0; i < incomeOperation.length; i++) {
                 const optionElement = document.createElement('option');
+                optionElement.setAttribute('selected', 'Доход')
                 optionElement.setAttribute("value", incomeOperation[i].id);
                 optionElement.innerText = incomeOperation[i].title;
                 this.categorySelectElement.appendChild(optionElement);
             }
+
         } else if (this.typeSelectElement.value === 'expense') {
             for (let i = 0; i < expenseOperation.length; i++) {
                 const optionElement = document.createElement('option');
@@ -52,44 +55,29 @@ export class CreateIncomeExpense {
         }
     }
 
-    validateForm(){ //валидация формы на заполненность полей
+    validateForm() { //валидация формы на заполненность полей
         let isValid = true;
-        if (this.typeSelectElement.value === 'type'){
-            this.typeSelectElement.classList.add('is-invalid');
-            isValid = false;
-        } else {
-            this.typeSelectElement.classList.remove('is-invalid');
-        }
-        if (this.categorySelectElement.value){
-            this.categorySelectElement.classList.remove('is-invalid');
-        } else {
-            this.categorySelectElement.classList.add('is-invalid');
-            isValid = false;
-        }
-        if(this.sumElement.value){
-            this.sumElement.classList.remove('is-invalid');
-        } else {
-            this.sumElement.classList.add('is-invalid');
-            isValid = false;
-        }
-        if(this.dateElement.value){
-            this.dateElement.classList.remove('is-invalid');
-        } else {
-            this.dateElement.classList.add('is-invalid');
-            isValid = false;
-        }
-        if(this.commentElement.value){
-            this.commentElement.classList.remove('is-invalid');
-        } else {
-            this.commentElement.classList.add('is-invalid');
-            isValid = false;
+        let textInputArray = [
+            this.typeSelectElement,
+            this.categorySelectElement,
+            this.sumElement,
+            this.dateElement,
+            this.commentElement
+        ]
+        for (let i = 0; i < textInputArray.length; i++) {
+            if (textInputArray[i].value) {
+                textInputArray[i].classList.remove('is-invalid');
+            } else {
+                textInputArray[i].classList.add('is-invalid');
+                isValid = false
+            }
         }
         return isValid;
     }
 
-    async saveOperation(e){ //запрос для сохранения операции
+    async saveOperation(e) { //запрос для сохранения операции
         e.preventDefault();
-        if (this.validateForm()){
+        if (this.validateForm()) {
             const result = await HttpUtils.request('/operations', 'POST', true, {
                 type: this.typeSelectElement.value,
                 amount: this.sumElement.value,
@@ -97,7 +85,7 @@ export class CreateIncomeExpense {
                 comment: this.commentElement.value,
                 category_id: Number(this.categorySelectElement.value)
             });
-            if(result.redirect){
+            if (result.redirect) {
                 return this.openNewRoute(result.redirect);
             }
 
