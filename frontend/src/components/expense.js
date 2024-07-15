@@ -7,6 +7,7 @@ export class Expense {
         this.id = urlParams.get('id');
 
         this.getExpense().then()
+
     }
 
     async getExpense(){ //запрос на получение категорий расходов
@@ -25,7 +26,6 @@ export class Expense {
 
     showExpenseList(expense) { //рисуем блоки с категориями
         const cardsElement = document.getElementById('cards');
-
         for (let i = 0; i < expense.length; i++) {
 
             const cardElement = document.createElement('div');
@@ -39,7 +39,7 @@ export class Expense {
             cardTitleElement.innerHTML = expense[i].title;
 
             const editElement = document.createElement('a');
-            editElement.setAttribute('href', '/edit-expense?id=' + expense[i].id);
+            editElement.setAttribute('href', '/edit-expense?id=' + expense[i].id + '&title=' + expense[i].title );
             editElement.setAttribute('type', 'button');
             editElement.className = 'btn btn-primary';
             editElement.innerHTML = 'Редактировать';
@@ -54,9 +54,9 @@ export class Expense {
             deleteElement.innerHTML = 'Удалить';
 
             const cardRowElement = document.getElementById('row')
-
-            console.log(cardsElement)
-            console.log(cardElement)
+            //
+            // console.log(cardsElement)
+            // console.log(cardElement)
 
             cardBodyElement.appendChild(cardTitleElement);
             cardBodyElement.appendChild(editElement);
