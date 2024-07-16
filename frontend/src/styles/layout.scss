@@ -57,7 +57,7 @@
 .nav-ul {
   .nav-item {
     .svg {
-      .path:active {
+      & .svg .path:active {
         fill: white;
       }
     }

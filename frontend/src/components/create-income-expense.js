@@ -12,7 +12,8 @@ export class CreateIncomeExpense {
         this.commentElement = document.getElementById('comment');
         this.getExpenseCategories().then();
         this.getIncomeCategories().then();
-        this.typeSelectElement.addEventListener('change', () => { //если юзер поменял тип в селекте, то меняем наполнение для категорий
+
+        this.typeSelectElement.addEventListener('change', () => {
             this.showCategories(this.incomeOperation, this.expenseOperation);
         })
         document.getElementById('create-button').addEventListener('click', this.saveOperation.bind(this));
@@ -20,20 +21,20 @@ export class CreateIncomeExpense {
 
 
 
-    async getIncomeCategories() { //получаем категории для доходов
+    async getIncomeCategories() {
         const result = await HttpUtils.request('/categories/income');
         this.incomeOperation = result.response;
         this.showCategories(this.incomeOperation, []);
     }
 
 
-    async getExpenseCategories() { //подучаем категории для расходов
+    async getExpenseCategories() {
         const result = await HttpUtils.request('/categories/expense');
         this.expenseOperation = result.response;
         this.showCategories([], this.expenseOperation);
     }
 
-    showCategories(incomeOperation, expenseOperation) { //наполняем селекты в зависимости от выбранного типа
+    showCategories(incomeOperation, expenseOperation) {
         this.categorySelectElement.innerHTML = '';
 
         if (this.typeSelectElement.value === 'income') {
@@ -55,7 +56,7 @@ export class CreateIncomeExpense {
         }
     }
 
-    validateForm() { //валидация формы на заполненность полей
+    validateForm() {
         let isValid = true;
         let textInputArray = [
             this.typeSelectElement,
@@ -75,7 +76,7 @@ export class CreateIncomeExpense {
         return isValid;
     }
 
-    async saveOperation(e) { //запрос для сохранения операции
+    async saveOperation(e) {
         e.preventDefault();
         if (this.validateForm()) {
             const result = await HttpUtils.request('/operations', 'POST', true, {

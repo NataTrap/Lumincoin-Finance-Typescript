@@ -37,31 +37,30 @@ export class EditIncomeExpense {
 
         this.operationOriginalData = result.response
 
-        //сразу определяем тип операции в селекте, чтобы категории потом подгружались верно
         for (let i = 0; i < this.typeSelectElement.options.length; i++) {
             if (this.typeSelectElement.options[i].value === result.response.type) {
                 this.typeSelectElement.selectedIndex = i;
             }
         }
 
-        await this.getIncomeCategories(); //ждем получение категорий, прежде, чем рисовать таблицу
+        await this.getIncomeCategories();
         await this.getExpenseCategories();
         this.showCategories(this.incomeOperation, this.expenseOperation);
 
         this.showOperation(result.response)
     }
 
-    async getIncomeCategories() { //получаем категории для доходов
+    async getIncomeCategories() {
         const result = await HttpUtils.request('/categories/income');
         this.incomeOperation = result.response;
     }
 
-    async getExpenseCategories() { //подучаем категории для расходов
+    async getExpenseCategories() {
         const result = await HttpUtils.request('/categories/expense');
         this.expenseOperation = result.response;
     }
 
-    showCategories(incomeOperation, expenseOperation) { //наполняем селекты в зависимости от выбранного типа
+    showCategories(incomeOperation, expenseOperation) {
         this.categorySelectElement.innerHTML = '';
         if (this.typeSelectElement.value === 'income') {
             for (let i = 0; i < incomeOperation.length; i++) {
@@ -96,7 +95,7 @@ export class EditIncomeExpense {
     }
 
 
-    validateForm() { //валидация формы на заполненность полей
+    validateForm() {
         let isValid = true;
         let textInputArray = [
             this.typeSelectElement,
