@@ -1,6 +1,6 @@
-import {HttpUtils} from "../utils/http-utils";
+import {HttpUtils} from "../../utils/http-utils";
 
-export class CreateExpense {
+export class CreateIncome {
     constructor(openNewRoute) {
         this.openNewRoute = openNewRoute;
 
@@ -22,7 +22,7 @@ export class CreateExpense {
     async saveCategory(e){
         e.preventDefault;
         if(this.validateForm()){
-            const result = await HttpUtils.request('/categories/expense', 'POST', true, {
+            const result = await HttpUtils.request('/categories/income', 'POST', true, {
                 title: this.inputElement.value
             });
 
@@ -33,7 +33,9 @@ export class CreateExpense {
                 console.log(result.response.message);
                 return alert('Возникла ошибка добавлении категории расхода');
             }
-            return this.openNewRoute('/expense');
+            return this.openNewRoute('/income');
         }
     }
+
+
 }

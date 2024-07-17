@@ -1,6 +1,6 @@
-import {HttpUtils} from "../utils/http-utils";
+import {HttpUtils} from "../../utils/http-utils";
 
-export class DeleteIncome {
+export class DeleteExpense {
     constructor(openNewRoute) {
         this.openNewRoute = openNewRoute;
         const urlParams = new URLSearchParams(window.location.search); //находим нужный id
@@ -13,7 +13,7 @@ export class DeleteIncome {
     }
 
     async deleteCategory(id) { //удаляем операцию
-        const result = await HttpUtils.request('/categories/income/' + id, 'DELETE', true);
+        const result = await HttpUtils.request('/categories/expense/' + id, 'DELETE', true);
         if (result.redirect) {
             return this.openNewRoute(result.redirect);
         }
@@ -22,7 +22,6 @@ export class DeleteIncome {
             console.log(result.response.message);
             return alert('Возникла ошибка при удалении категории');
         }
-        return this.openNewRoute('/income');
+        return this.openNewRoute('/expense');
     }
-
 }

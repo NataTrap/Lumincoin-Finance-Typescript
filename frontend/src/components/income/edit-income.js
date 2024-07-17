@@ -1,5 +1,5 @@
-import {HttpUtils} from "../utils/http-utils";
 import {Income} from "./income";
+import {HttpUtils} from "../../utils/http-utils";
 
 export class EditIncome {
     constructor(openNewRoute) {

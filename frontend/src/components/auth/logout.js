@@ -1,6 +1,6 @@
+import {HttpUtils} from "../../utils/http-utils";
+import {AuthUtils} from "../../utils/auth-utils";
 
-import {AuthUtils} from "../utils/auth-utils";
-import {HttpUtils} from "../utils/http-utils";
 
 export class Logout {
     constructor(openNewRoute) {
