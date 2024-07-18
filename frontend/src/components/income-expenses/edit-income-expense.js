@@ -16,6 +16,7 @@ export class EditIncomeExpense {
         this.commentElement = document.getElementById('comment')
         this.idElement = document.getElementById('id')
 
+
         this.typeSelectElement.addEventListener('change', () => { //если юзер поменял тип в селекте, то меняем наполнение для категорий
             this.showCategories(this.incomeOperation, this.expenseOperation);
         });
@@ -24,6 +25,37 @@ export class EditIncomeExpense {
         document.getElementById('update-button').addEventListener('click', this.updateIncomeExpense.bind(this))
         this.getOperation(id).then()
     }
+
+    async getIncomeCategories() {
+        const result = await HttpUtils.request('/categories/income');
+        this.incomeOperation = result.response;
+    }
+
+    async getExpenseCategories() {
+        const result = await HttpUtils.request('/categories/expense');
+        this.expenseOperation = result.response;
+    }
+
+
+    showCategories(incomeOperation, expenseOperation) {
+        this.categorySelectElement.innerHTML = '';
+        if (this.typeSelectElement.value === 'income') {
+            for (let i = 0; i < incomeOperation.length; i++) {
+                const optionElement = document.createElement('option');
+                optionElement.setAttribute("value", incomeOperation[i].id);
+                optionElement.innerText = incomeOperation[i].title;
+                this.categorySelectElement.appendChild(optionElement);
+            }
+        } else if (this.typeSelectElement.value === 'expense') {
+            for (let i = 0; i < expenseOperation.length; i++) {
+                const optionElement = document.createElement('option');
+                optionElement.setAttribute("value", expenseOperation[i].id);
+                optionElement.innerText = expenseOperation[i].title;
+                this.categorySelectElement.appendChild(optionElement);
+            }
+        }
+    }
+
 
     async getOperation(id) {
         const result = await HttpUtils.request('/operations/' + id)
@@ -45,39 +77,11 @@ export class EditIncomeExpense {
 
         await this.getIncomeCategories();
         await this.getExpenseCategories();
-        this.showCategories(this.incomeOperation, this.expenseOperation);
-
+        this.showCategories(this.incomeOperation,this.expenseOperation );
         this.showOperation(result.response)
     }
 
-    async getIncomeCategories() {
-        const result = await HttpUtils.request('/categories/income');
-        this.incomeOperation = result.response;
-    }
 
-    async getExpenseCategories() {
-        const result = await HttpUtils.request('/categories/expense');
-        this.expenseOperation = result.response;
-    }
-
-    showCategories(incomeOperation, expenseOperation) {
-        this.categorySelectElement.innerHTML = '';
-        if (this.typeSelectElement.value === 'income') {
-            for (let i = 0; i < incomeOperation.length; i++) {
-                const optionElement = document.createElement('option');
-                optionElement.setAttribute("value", incomeOperation[i].id);
-                optionElement.innerText = incomeOperation[i].title;
-                this.categorySelectElement.appendChild(optionElement);
-            }
-        } else if (this.typeSelectElement.value === 'expense') {
-            for (let i = 0; i < expenseOperation.length; i++) {
-                const optionElement = document.createElement('option');
-                optionElement.setAttribute("value", expenseOperation[i].id);
-                optionElement.innerText = expenseOperation[i].title;
-                this.categorySelectElement.appendChild(optionElement);
-            }
-        }
-    }
 
 
     showOperation(operation) {
@@ -138,7 +142,7 @@ export class EditIncomeExpense {
                 changedData.comment = this.commentElement.value
             }
 
-            if (Object.keys(changedData).length > 0 ){
+            if (Object.keys(changedData).length > 0) {
 
                 const result = await HttpUtils.request('/operations/' + this.operationOriginalData.id, 'PUT', true, {
                     type: this.typeSelectElement.value,
@@ -146,18 +150,18 @@ export class EditIncomeExpense {
                     date: this.dateElement.value,
                     comment: this.commentElement.value,
                     category_id: Number(this.categorySelectElement.value)
-                },changedData )
+                }, changedData)
 
-            if (result.redirect) {
-                return this.openNewRoute(result.redirect)
+                if (result.redirect) {
+                    return this.openNewRoute(result.redirect)
+                }
+
+                if (result.error || !result.response || (result.response && result.response.error)) {
+                    return alert('Возникла ошибка при Редактирование. Обратитесь в поддержку')
+                }
+
+                return this.openNewRoute('/income-expenses')
             }
-
-            if (result.error || !result.response || (result.response && result.response.error)) {
-                return alert('Возникла ошибка при Редактирование. Обратитесь в поддержку')
-            }
-
-            return this.openNewRoute('/income-expenses')
-        }
         }
     }
 }

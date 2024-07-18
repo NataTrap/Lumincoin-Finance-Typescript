@@ -26,8 +26,11 @@ export class Expense {
 
     getExpenseList(expense) {
         const cardsElement = document.getElementById('cards');
-        for (let i = 0; i < expense.length; i++) {
+        if (cardsElement) {
 
+
+        cardsElement.innerHTML = ""
+        for (let i = 0; i < expense.length; i++) {
             const cardElement = document.createElement('div');
             cardElement.className = 'card';
 
@@ -40,7 +43,7 @@ export class Expense {
             cardTitleElement.innerHTML = expense[i].title;
 
             const editElement = document.createElement('a');
-            editElement.setAttribute('href', '/edit-expense?id=' + expense[i].id + '&title=' + expense[i].title );
+            editElement.setAttribute('href', '/edit-expense?id=' + expense[i].id + '&title=' + expense[i].title);
             editElement.setAttribute('type', 'button');
             editElement.className = 'btn btn-primary';
             editElement.innerHTML = 'Редактировать';
@@ -60,9 +63,11 @@ export class Expense {
             cardBodyElement.appendChild(editElement);
             cardBodyElement.appendChild(deleteElement);
             cardElement.appendChild(cardBodyElement);
-            cardsElement.appendChild(cardElement);
-            cardRowElement.appendChild(cardsElement);
-
+            if (cardsElement) {
+                cardsElement.appendChild(cardElement);
+                cardRowElement.appendChild(cardsElement);
+            }
+        }
 
         }
 
@@ -80,7 +85,9 @@ export class Expense {
 
         cardBodyElement.appendChild(newElement);
         cardElement.appendChild(cardBodyElement);
-        cardsElement.appendChild(cardElement);
+        if (cardsElement) {
+            cardsElement.appendChild(cardElement);
+        }
 
         this.categoryDeleteEventListeners()
     }

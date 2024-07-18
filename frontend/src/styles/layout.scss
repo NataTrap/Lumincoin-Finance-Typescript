@@ -54,17 +54,26 @@
 }
 
 
-.nav-ul {
-  .nav-item {
-    .svg {
-      & .svg .path:active {
-        fill: white;
-      }
-    }
-  }
+//.nav-item .svg:active{
+//  fill: white;
+//}
+
+
+
+//#sidebar > ul > li > a > svg > path:active {
+//  fill: white;
+//}
+
+
+
+//.nav-link svg path:active {
+//  fill: white;
+//}
+
+
+#sidebar .nav-link.active path {
+  fill: white
 }
-
-
 
 .logout{
   color: #052C65;

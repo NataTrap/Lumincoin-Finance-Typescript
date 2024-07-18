@@ -1,4 +1,3 @@
-import {Income} from "./income";
 import {HttpUtils} from "../../utils/http-utils";
 
 export class EditIncome {

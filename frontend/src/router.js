@@ -8,25 +8,22 @@ import {EditExpense} from "./components/expenses/edit-expense";
 import {DeleteExpense} from "./components/expenses/delete-expense";
 import {DeleteIncome} from "./components/income/delete-income";
 import {EditIncome} from "./components/income/edit-income";
-import {CreateIncomeExpense} from "./components/income-expenses/create-income-expense";
 import {HttpUtils} from "./utils/http-utils";
 import {AuthUtils} from "./utils/auth-utils";
 import {EditIncomeExpense} from "./components/income-expenses/edit-income-expense";
 import {DeleteIncomeExpense} from "./components/income-expenses/delete-income-expense";
 import {Expense} from "./components/expenses/expense";
 import {CreateExpense} from "./components/expenses/create-expense";
+import {CreateExpenseInIncomeExpense} from "./components/income-expenses/create-expense-in-income-expense";
+import {CreateIncomeInIncomeExpense} from "./components/income-expenses/create-income-in-income-expense";
 
 
 export class Router {
     constructor() {
         this.titlePageElement = document.getElementById('title');
         this.contentPageElement = document.getElementById('content');
-
         this.initEvents();
-
-
         this.routes = [
-
             {
                 route: '/',
                 title: 'Главная',
@@ -37,7 +34,7 @@ export class Router {
                 },
                 scripts: [
                     'moment.min.js',
-                   'locales.js',
+                    'locales.js',
 
                 ],
                 styles: [
@@ -81,15 +78,6 @@ export class Router {
                     'locales.js',
 
                 ],
-            },
-            {
-                route: '/create-income-expense',
-                title: 'Создание дохода/расхода',
-                filePathTemplate: '/templates/income-expenses/create-income-expense.html',
-                useLayout: '/templates/layout.html',
-                load: () => {
-                    new CreateIncomeExpense(this.openNewRoute.bind(this))
-                }
             },
             {
                 route: '/edit-income-expense',
@@ -171,6 +159,24 @@ export class Router {
                 }
             },
             {
+                route: '/create-expense-in-income-expense',
+                title: 'Создание дохода/расхода',
+                filePathTemplate: '/templates/income-expenses/create-income-expense.html',
+                useLayout: '/templates/layout.html',
+                load: () => {
+                    new CreateExpenseInIncomeExpense(this.openNewRoute.bind(this))
+                }
+            },
+            {
+                route: '/create-income-in-income-expense',
+                title: 'Создание дохода/расхода',
+                filePathTemplate: '/templates/income-expenses/create-income-expense.html',
+                useLayout: '/templates/layout.html',
+                load: () => {
+                    new CreateIncomeInIncomeExpense(this.openNewRoute.bind(this))
+                }
+            },
+            {
                 route: '/edit-income',
                 title: 'Редактирование дохода',
                 filePathTemplate: '/templates/income/edit-income.html',
@@ -236,7 +242,7 @@ export class Router {
 
             if (newRoute.filePathTemplate) {
                 let contentBlock = this.contentPageElement
-                if (newRoute.useLayout) {
+                if (newRoute.useLayout ) {
                     this.contentPageElement.innerHTML = await fetch(newRoute.useLayout).then(response => response.text())
                     contentBlock = document.getElementById('content-layout');
 
@@ -275,6 +281,7 @@ export class Router {
         if (result.error || !result.response || (result.response && result.response.error)) {
             return alert('Возникла ошибка при запросе Баланса. Обратитесь в поддержку ')
         }
+
         document.getElementById('balance').innerText = result.response.balance + '$'
     }
 
@@ -288,19 +295,4 @@ export class Router {
             }
         })
     }
-
-    // async updateBalance () {
-    //     const result = await HttpUtils.request('/balance','PUT',true, {
-    //         newBalance: this.balanceElement.value
-    //     })
-    //     if (result.redirect) {
-    //         return this.openNewRoute(result.redirect);
-    //     }
-    //     if (result.error || !result.response || (result.response && result.response.error)) {
-    //         return alert('Возникла ошибка при запросе Баланса. Обратитесь в поддержку ')
-    //     }
-    //     this.showBalance(result.response.balance)
-    // }
-
-
 }

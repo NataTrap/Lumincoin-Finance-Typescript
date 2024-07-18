@@ -1,9 +1,8 @@
 import {HttpUtils} from "../../utils/http-utils";
 
-export class CreateIncomeExpense {
+export class CreateExpenseInIncomeExpense {
     constructor(openNewRoute) {
         this.openNewRoute = openNewRoute;
-        this.incomeOperation = null;
         this.expenseOperation = null;
         this.typeSelectElement = document.getElementById('type-select');
         this.categorySelectElement = document.getElementById('category');
@@ -11,20 +10,12 @@ export class CreateIncomeExpense {
         this.dateElement = document.getElementById('date');
         this.commentElement = document.getElementById('comment');
         this.getExpenseCategories().then();
-        this.getIncomeCategories().then();
 
         this.typeSelectElement.addEventListener('change', () => {
-            this.showCategories(this.incomeOperation, this.expenseOperation);
+            this.showCategories(this.expenseOperation);
         })
+
         document.getElementById('create-button').addEventListener('click', this.saveOperation.bind(this));
-    }
-
-
-
-    async getIncomeCategories() {
-        const result = await HttpUtils.request('/categories/income');
-        this.incomeOperation = result.response;
-        this.showCategories(this.incomeOperation, []);
     }
 
 
@@ -32,29 +23,29 @@ export class CreateIncomeExpense {
         const result = await HttpUtils.request('/categories/expense');
         this.expenseOperation = result.response;
         this.showCategories([], this.expenseOperation);
+        this.showOption()
     }
 
-    showCategories(incomeOperation, expenseOperation) {
-        this.categorySelectElement.innerHTML = '';
 
-        if (this.typeSelectElement.value === 'income') {
-            for (let i = 0; i < incomeOperation.length; i++) {
-                const optionElement = document.createElement('option');
-                optionElement.setAttribute('selected', 'Доход')
-                optionElement.setAttribute("value", incomeOperation[i].id);
-                optionElement.innerText = incomeOperation[i].title;
-                this.categorySelectElement.appendChild(optionElement);
-            }
+    showOption() {
+        const optionExpenseElement = document.createElement('option');
+        optionExpenseElement.setAttribute('value', 'expense');
+        optionExpenseElement.setAttribute('selected', 'selected')
+        optionExpenseElement.innerText = 'Расход'
+        this.typeSelectElement.appendChild(optionExpenseElement)
+        this.showCategories(this.expenseOperation)
+    }
 
-        } else if (this.typeSelectElement.value === 'expense') {
-            for (let i = 0; i < expenseOperation.length; i++) {
-                const optionElement = document.createElement('option');
-                optionElement.setAttribute("value", expenseOperation[i].id);
-                optionElement.innerText = expenseOperation[i].title;
-                this.categorySelectElement.appendChild(optionElement);
-            }
+    showCategories(expenseOperation) {
+        for (let i = 0; i < expenseOperation.length; i++) {
+            const optionElement = document.createElement('option');
+            optionElement.setAttribute("value", expenseOperation[i].id);
+            optionElement.innerText = expenseOperation[i].title;
+            this.categorySelectElement.appendChild(optionElement);
         }
+
     }
+
 
     validateForm() {
         let isValid = true;
