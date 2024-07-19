@@ -22,7 +22,7 @@ export class CreateIncomeInIncomeExpense {
     async getIncomeCategories() {
         const result = await HttpUtils.request('/categories/income');
         this.incomeOperation = result.response;
-        this.showCategories(this.incomeOperation, []);
+        this.showCategories([], this.incomeOperation);
         this.showOption()
     }
 

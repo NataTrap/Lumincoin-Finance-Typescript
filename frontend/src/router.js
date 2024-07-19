@@ -253,6 +253,8 @@ export class Router {
                         if (userInfo.name) {
                             this.profileNameElement.innerText = userInfo.name + ' ' + userInfo.lastName
                         }
+                    } else {
+                        location.href = '/login'
                     }
 
                     this.getBalance().then()

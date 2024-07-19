@@ -39,6 +39,7 @@ export class EditIncomeExpense {
 
     showCategories(incomeOperation, expenseOperation) {
         this.categorySelectElement.innerHTML = '';
+
         if (this.typeSelectElement.value === 'income') {
             for (let i = 0; i < incomeOperation.length; i++) {
                 const optionElement = document.createElement('option');
@@ -46,6 +47,7 @@ export class EditIncomeExpense {
                 optionElement.innerText = incomeOperation[i].title;
                 this.categorySelectElement.appendChild(optionElement);
             }
+
         } else if (this.typeSelectElement.value === 'expense') {
             for (let i = 0; i < expenseOperation.length; i++) {
                 const optionElement = document.createElement('option');
@@ -68,7 +70,6 @@ export class EditIncomeExpense {
         }
 
         this.operationOriginalData = result.response
-
         for (let i = 0; i < this.typeSelectElement.options.length; i++) {
             if (this.typeSelectElement.options[i].value === result.response.type) {
                 this.typeSelectElement.selectedIndex = i;
@@ -77,27 +78,23 @@ export class EditIncomeExpense {
 
         await this.getIncomeCategories();
         await this.getExpenseCategories();
-        this.showCategories(this.incomeOperation,this.expenseOperation );
         this.showOperation(result.response)
+        this.showCategories(this.incomeOperation, this.expenseOperation);
     }
-
-
-
 
     showOperation(operation) {
         this.sumElement.value = operation.amount
         this.categorySelectElement.value = operation.category
         this.dateElement.value = operation.date
         this.commentElement.value = operation.comment
-
-
-        for (let i = 0; i < this.typeSelectElement.options.length; i++) {
-            if (this.typeSelectElement.options[i].value === operation.type) {
-                this.typeSelectElement.selectedIndex = i
+        if (this.typeSelectElement) {
+            for (let i = 0; i < this.typeSelectElement.options.length; i++) {
+                if (this.typeSelectElement.options[i].value === operation.type) {
+                    this.typeSelectElement.selectedIndex = i
+                }
             }
         }
     }
-
 
     validateForm() {
         let isValid = true;
@@ -159,7 +156,6 @@ export class EditIncomeExpense {
                 if (result.error || !result.response || (result.response && result.response.error)) {
                     return alert('Возникла ошибка при Редактирование. Обратитесь в поддержку')
                 }
-
                 return this.openNewRoute('/income-expenses')
             }
         }
