@@ -12,8 +12,6 @@ export class AuthUtils {
         localStorage.setItem(this.userInfoTokenKey, JSON.stringify(userInfo));
 
     }
-
-
     static removeAuthInfo () {
         localStorage.removeItem(this.accessTokenKey);
         localStorage.removeItem(this.refreshTokenKey);
@@ -25,7 +23,6 @@ export class AuthUtils {
         if (key && [this.accessTokenKey, this.refreshTokenKey, this.userInfoTokenKey].includes(key)) {
             return  localStorage.getItem(key)
         }
-
         else {
             return {
                 [this.accessTokenKey]: localStorage.getItem(this.accessTokenKey),
