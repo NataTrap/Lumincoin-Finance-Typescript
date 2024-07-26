@@ -1,7 +1,14 @@
 import {HttpUtils} from "../../utils/http-utils";
 
 export class EditIncomeExpense {
-    constructor(openNewRoute) {
+    private openNewRoute: string
+    private typeSelectElement: HTMLSelectElement | null
+    private categorySelectElement: HTMLElement | null
+    private sumElement: HTMLElement | null
+    private dateElement: HTMLElement | null
+    private commentElement: HTMLElement | null
+
+    constructor(openNewRoute: string) {
         this.openNewRoute = openNewRoute;
         const urlParams = new URLSearchParams(window.location.search)
         const id = urlParams.get('id')
@@ -9,37 +16,44 @@ export class EditIncomeExpense {
             return this.openNewRoute('/')
         }
 
-        this.typeSelectElement = document.getElementById('type-select')
-        this.categorySelectElement = document.getElementById('category')
-        this.sumElement = document.getElementById('sum')
+        this.typeSelectElement = document.getElementById('type-select') as HTMLSelectElement
+        this.categorySelectElement = document.getElementById('category') as HTMLElement
+        this.sumElement = document.getElementById('sum') as HTMLElement
         this.dateElement = document.getElementById('date')
         this.commentElement = document.getElementById('comment')
-        this.idElement = document.getElementById('id')
+        // this.idElement = document.getElementById('id')
 
 
-        this.typeSelectElement.addEventListener('change', () => { //если юзер поменял тип в селекте, то меняем наполнение для категорий
-            this.showCategories(this.incomeOperation, this.expenseOperation);
-        });
-
-
-        document.getElementById('update-button').addEventListener('click', this.updateIncomeExpense.bind(this))
-        this.getOperation(id).then()
+        if(this.typeSelectElement) {
+            this.typeSelectElement.addEventListener('change', () => { //если юзер поменял тип в селекте, то меняем наполнение для категорий
+                this.showCategories(this.incomeOperation, this.expenseOperation);
+            });
+        }
+       
+        const updateButton = document.getElementById('update-button')
+        if(updateButton) {
+            updateButton.addEventListener('click', this.updateIncomeExpense.bind(this))
+            this.getOperation(id).then()
+        }
+       
     }
 
-    async getIncomeCategories() {
+    private async getIncomeCategories(): Promise<void> {
         const result = await HttpUtils.request('/categories/income');
         this.incomeOperation = result.response;
     }
 
-    async getExpenseCategories() {
+    private async getExpenseCategories(): Promise<void> {
         const result = await HttpUtils.request('/categories/expense');
         this.expenseOperation = result.response;
     }
 
 
-    showCategories(incomeOperation, expenseOperation) {
-        this.categorySelectElement.innerHTML = '';
-
+    public showCategories(incomeOperation: string, expenseOperation: string): void {
+        if (this.categorySelectElement) {
+            this.categorySelectElement.innerHTML = '';
+        }
+       if(this.typeSelectElement) {
         if (this.typeSelectElement.value === 'income') {
             for (let i = 0; i < incomeOperation.length; i++) {
                 const optionElement = document.createElement('option');
@@ -56,10 +70,11 @@ export class EditIncomeExpense {
                 this.categorySelectElement.appendChild(optionElement);
             }
         }
+       }
     }
 
 
-    async getOperation(id) {
+    private async getOperation(id: number): Promise<void> {
         const result = await HttpUtils.request('/operations/' + id)
         if (result.redirect) {
             return this.openNewRoute(result.redirect)
@@ -119,7 +134,7 @@ export class EditIncomeExpense {
     }
 
 
-    async updateIncomeExpense(e, id) {
+    private async updateIncomeExpense(e: any, id: number): Promise<> {
         e.preventDefault()
         if (this.validateForm()) {
             const changedData = {}

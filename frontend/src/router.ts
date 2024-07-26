@@ -20,10 +20,10 @@ import {RouteType} from "./types/route.type";
 
 
 export class Router {
-    private titlePageElement: HTMLElement | null
+    readonly titlePageElement: HTMLElement | null
     readonly contentPageElement: HTMLElement | null
 
-    private routes: any
+    private routes: RouteType[]
 
     constructor() {
         this.titlePageElement = document.getElementById('title');
@@ -191,25 +191,26 @@ export class Router {
 
     }
 
-    public async openNewRoute(url): Promise<void> {
-        const currentRoute: string  = window.location.pathname;
+    public async openNewRoute(url: string): Promise<void> {
+        const currentRoute:  string  = window.location.pathname;
         history.pushState({}, '', url);
         await this.activateRoute(null, currentRoute)
     }
 
-   public async clickHandler(e): Promise<void> {
-        let element = null
-        if (e.target.nodeName === 'A') {
-            element = e.target
-        } else if (e.target.parentNode.nodeName === 'A') {
-            element = e.target.parentNode
+   public async clickHandler(e: Event): Promise<void> {
+        let target: HTMLAnchorElement = e.target as HTMLAnchorElement
+        let element: HTMLAnchorElement | null = null
+        if (target.nodeName === 'A') {
+            element = target
+        } else if (target.parentNode && target.parentNode.nodeName === 'A') {
+            element = target.parentNode as HTMLAnchorElement
         }
 
 
         if (element) {
             e.preventDefault()
             const currentRoute: string = window.location.pathname;
-            const url = element.href.replace(window.location.origin, '')
+            const url: string = element.href.replace(window.location.origin, '')
             if (!url || (currentRoute === url.replace('#', '')) || url.startsWith('javascript:void(0)')) {
                 return;
             }
@@ -229,7 +230,7 @@ export class Router {
             }
 
             if (newRoute.filePathTemplate) {
-                let contentBlock = this.contentPageElement
+                let contentBlock: HTMLElement | null = this.contentPageElement
                 if (newRoute.useLayout) {
                     if (this.contentPageElement) {
                         this.contentPageElement.innerHTML = await fetch(newRoute.useLayout).then(response => response.text())
@@ -250,7 +251,9 @@ export class Router {
                     this.getBalance().then()
                     this.activateMenuItem(newRoute)
                 }
-                contentBlock.innerHTML = await fetch(newRoute.filePathTemplate).then(response => response.text())
+                if (contentBlock) {
+                    contentBlock.innerHTML = await fetch(newRoute.filePathTemplate).then(response => response.text())
+                }
 
             }
 
@@ -267,17 +270,21 @@ export class Router {
 
     public async getBalance(): Promise<void> {
         const result = await HttpUtils.request('/balance')
+
         if (result.redirect) {
             return this.openNewRoute(result.redirect);
         }
         if (result.error || !result.response || (result.response && result.response.error)) {
             return alert('Возникла ошибка при запросе Баланса. Обратитесь в поддержку ')
         }
-
-        document.getElementById('balance').innerText = result.response.balance + '$'
+            const balance = document.getElementById('balance')
+            if (balance) {
+                balance.innerText = result.response.balance + '$'  
+            }
+       
     }
 
-    activateMenuItem(route) {
+    private activateMenuItem(route: string): void {
         document.querySelectorAll('#sidebar .nav-link').forEach(item => {
             const href = item.getAttribute('href')
             if ((route.route.includes(href) && href !== '/') || (route.route === '/' && href === '/')) {

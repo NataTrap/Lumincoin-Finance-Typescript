@@ -1,9 +1,10 @@
 import config from "../config/config";
 import {AuthUtils} from "./auth-utils";
+import {ResultType} from "../types/result.type";
 
 export class HttpUtils {
 
-    static async request (url, method = 'GET', useAuth = true, body = null) {
+    public static async request (url: string, method: string = 'GET', useAuth: boolean = true, body: string | null = null): Promise<ResultType> {
         const result = {
             error: false,
             response: null
@@ -17,7 +18,6 @@ export class HttpUtils {
                 'Accept': 'application/json',
                 'x-auth-token': token
             },
-
         }
 
         if (useAuth) {
@@ -33,6 +33,7 @@ export class HttpUtils {
         }
 
         let response = null
+
         try {
             response = await fetch(config.api + url, params);
             result.response = await response.json()
@@ -44,13 +45,12 @@ export class HttpUtils {
         if (response.status < 200 || response.status >= 300) {
             result.error = true
             if (useAuth && response.status === 401) {
-
                 if (!token) {
                     // 1 Нет токена
                     result.redirect = '/login'
                 } else {
                     // 2 Токен устарел
-                    const updateTokenResult =  await AuthUtils.updateRefreshToken();
+                    const updateTokenResult = await AuthUtils.updateRefreshToken();
                     if (updateTokenResult) {
                         // Делаем запрос повторно
                         return this.request(url, method, useAuth, body)
@@ -59,7 +59,6 @@ export class HttpUtils {
                     }
                 }
             }
-
         }
 
         return result

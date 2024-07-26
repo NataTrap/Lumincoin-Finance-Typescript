@@ -2,9 +2,9 @@ import {HttpUtils} from "../../utils/http-utils";
 import {AuthUtils} from "../../utils/auth-utils";
 
 export class Form {
+    
     constructor(openNewRote, page) {
         this.openNewRoute = openNewRote
-
         this.page = page
         this.processElement = document.getElementById('process-button')
         this.passwordElement = document.getElementById('password');
