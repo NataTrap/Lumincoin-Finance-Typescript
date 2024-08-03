@@ -1,7 +1,12 @@
+import { GetCategoryType } from "../../types/getExpense.type";
+import { HttpUtilsResultType } from "../../types/http-utils/httpUtils.type";
+import { OpenNewRoute } from "../../types/route.type";
 import {HttpUtils} from "../../utils/http-utils";
 
 export class Income {
-    constructor(openNewRoute) {
+    private openNewRoute: OpenNewRoute
+    private id: string | null
+    constructor(openNewRoute: OpenNewRoute) {
         this.openNewRoute = openNewRoute
         const urlParams = new URLSearchParams(window.location.search)
         this.id = urlParams.get('id');
@@ -9,14 +14,14 @@ export class Income {
         this.getIncome().then()
     }
 
-    async getIncome() {
-        const result = await HttpUtils.request('/categories/income')
+    private async getIncome(): Promise<void> {
+        const result: HttpUtilsResultType<GetCategoryType> = await HttpUtils.request('/categories/income')
         if(result.redirect){
             return this.openNewRoute(result.redirect);
         }
 
         if (result.error || !result.response || (result.response && result.response.error)) {
-            console.log(result.response.message)
+           
             return alert('Возникла ошибка при запросе. Обратитесь в поддержку ')
         }
 
@@ -24,7 +29,7 @@ export class Income {
 
     }
 
-    getIncomeList(income) {
+    private getIncomeList(income: any): void {
         const cardsElement = document.getElementById('cards');
         for (let i = 0; i < income.length; i++) {
 
@@ -60,10 +65,10 @@ export class Income {
             cardBodyElement.appendChild(editElement);
             cardBodyElement.appendChild(deleteElement);
             cardElement.appendChild(cardBodyElement);
-            cardsElement.appendChild(cardElement);
-            cardRowElement.appendChild(cardsElement);
-
-
+            if(cardsElement && cardRowElement) {
+                cardsElement.appendChild(cardElement);
+                cardRowElement.appendChild(cardsElement);
+            }
         }
 
 
@@ -80,17 +85,25 @@ export class Income {
 
         cardBodyElement.appendChild(newElement);
         cardElement.appendChild(cardBodyElement);
-        cardsElement.appendChild(cardElement);
+        if(cardsElement) {
+            cardsElement.appendChild(cardElement);
+        }
+       
 
         this.categoryDeleteEventListeners()
     }
     categoryDeleteEventListeners() { //передаем id операции в каждую кнопку удаления
-        const deleteButtons = document.querySelectorAll('.delete-btn');
-        for (let i = 0; i < deleteButtons.length; i++) {
-            deleteButtons[i].addEventListener('click', (event) => {
-                let operationId = event.target.closest('.delete-btn').getAttribute('data-id');
-                let deleteBtn = document.getElementById('delete-btn');
-                deleteBtn.setAttribute('href', '/delete-income?id=' + operationId);
+        const deleteButtons: NodeListOf<Element> = document.querySelectorAll('.delete-btn');
+        for (let i: number = 0; i < deleteButtons.length; i++) {
+            deleteButtons[i].addEventListener('click', (event: Event): void => {
+                if(event.target instanceof HTMLElement) {
+                const targetElement: HTMLElement | null = event.target.closest('.delete-btn');
+                if(targetElement) {
+                let operationId: string | null = targetElement.getAttribute('data-id');
+                let deleteBtn:  HTMLElement | null = document.getElementById('delete-btn');
+                (deleteBtn as HTMLElement).setAttribute('href', '/delete-expense?id=' + operationId);
+                }
+            }
             });
         }
     }

@@ -1,17 +1,19 @@
 import config from "../config/config";
 import {AuthUtils} from "./auth-utils";
-import {ResultType} from "../types/result.type";
+import { HttpUtilsResultType } from "../types/http-utils/httpUtils.type";
+import { TokensType } from "../types/tokens.type";
 
 export class HttpUtils {
 
-    public static async request (url: string, method: string = 'GET', useAuth: boolean = true, body: string | null = null): Promise<ResultType> {
-        const result = {
+    // public static async request(url: "/balance", method: 'GET', useAuth: true, body: null): Promise<ResultBalanceType>
+    public static async request<T>(url: string, method: string = 'GET', useAuth: boolean = true, body: any = null): Promise<HttpUtilsResultType<T>> {
+        const result: HttpUtilsResultType<T> = {
             error: false,
             response: null
         }
-        let token = null
 
-        const params = {
+        let token:  string | TokensType | null = null
+        const params: any = {
             method: method,
             headers: {
                 'Content-type': 'application/json',
@@ -21,7 +23,7 @@ export class HttpUtils {
         }
 
         if (useAuth) {
-            token = AuthUtils.getAuthInfo(AuthUtils.accessTokenKey);
+            token= AuthUtils.getAuthInfo(AuthUtils.accessTokenKey);
             if (token) {
                 params.headers['x-auth-token'] = token
             }
@@ -50,7 +52,7 @@ export class HttpUtils {
                     result.redirect = '/login'
                 } else {
                     // 2 Токен устарел
-                    const updateTokenResult = await AuthUtils.updateRefreshToken();
+                    const updateTokenResult: boolean = await AuthUtils.updateRefreshToken();
                     if (updateTokenResult) {
                         // Делаем запрос повторно
                         return this.request(url, method, useAuth, body)

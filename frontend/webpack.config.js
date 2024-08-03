@@ -3,8 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 module.exports = {
     entry: './src/app.ts',
-    devtool: 'inline-source-map',
     mode: 'development',
+    devtool: 'inline-source-map',
     module: {
         rules: [
             {
@@ -12,26 +12,6 @@ module.exports = {
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
-        ],
-    },
-    resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
-    },
-    output: {
-        filename: 'app.ts',
-        path: path.resolve(__dirname, 'dist'),
-        publicPath: '/'
-    },
-    devServer: {
-        static: {
-            directory: path.join(__dirname, 'public'),
-        },
-        compress: true,
-        port: 9000,
-        historyApiFallback: true,
-    },
-    module: {
-        rules: [
             {
                 test: /\.scss$/i,
                 use: [
@@ -42,11 +22,33 @@ module.exports = {
             },
         ],
     },
-    plugins: [new HtmlWebpackPlugin({
-        template: './index.html'
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+    },
+    cache: false,
+    output: {
+        filename: 'app.ts',
+        path: path.resolve(__dirname, 'dist'),
+        clean: true,
+        publicPath: '/'
+    },
+    devServer: {
+        static: {
+            directory: path.join(__dirname, 'public'),
+        },
+        liveReload: true,
+        compress: true,
+        port: 9000,
+        historyApiFallback: true,
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+        template: './index.html',
+            cache: false
     }),
         new CopyPlugin({
             patterns: [
+            
                 { from: "./src/templates", to: "templates" },
                 { from: "./src/static/images", to: "images" },
                 { from: "./node_modules/bootstrap/dist/css/bootstrap.css", to: "css" },

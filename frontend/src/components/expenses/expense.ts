@@ -1,7 +1,12 @@
+import { GetCategoryType } from "../../types/getExpense.type";
+import { HttpUtilsResultType } from "../../types/http-utils/httpUtils.type";
+import { OpenNewRoute } from "../../types/route.type";
 import {HttpUtils} from "../../utils/http-utils";
 
 export class Expense {
-    constructor(openNewRoute) {
+    private openNewRoute: OpenNewRoute
+    private id: string | null
+    constructor(openNewRoute: OpenNewRoute) {
         this.openNewRoute = openNewRoute
         const urlParams = new URLSearchParams(window.location.search)
         this.id = urlParams.get('id');
@@ -9,14 +14,13 @@ export class Expense {
         this.getExpense().then()
     }
 
-    async getExpense() {
-        const result = await HttpUtils.request('/categories/expense')
+    public async getExpense(): Promise<void>{
+        const result: HttpUtilsResultType<GetCategoryType> = await HttpUtils.request('/categories/expense')
         if(result.redirect){
             return this.openNewRoute(result.redirect);
         }
 
         if (result.error || !result.response || (result.response && result.response.error)) {
-            console.log(result.response.message)
             return alert('Возникла ошибка при запросе. Обратитесь в поддержку ')
         }
 
@@ -24,11 +28,9 @@ export class Expense {
 
     }
 
-    getExpenseList(expense) {
+    public getExpenseList(expense: any): void {
         const cardsElement = document.getElementById('cards');
         if (cardsElement) {
-
-
         cardsElement.innerHTML = ""
         for (let i = 0; i < expense.length; i++) {
             const cardElement = document.createElement('div');
@@ -65,7 +67,10 @@ export class Expense {
             cardElement.appendChild(cardBodyElement);
             if (cardsElement) {
                 cardsElement.appendChild(cardElement);
-                cardRowElement.appendChild(cardsElement);
+                if(cardRowElement) {
+                    cardRowElement.appendChild(cardsElement);
+                }
+               
             }
         }
 
@@ -92,12 +97,17 @@ export class Expense {
         this.categoryDeleteEventListeners()
     }
     categoryDeleteEventListeners() { //передаем id операции в каждую кнопку удаления
-        const deleteButtons = document.querySelectorAll('.delete-btn');
-        for (let i = 0; i < deleteButtons.length; i++) {
-            deleteButtons[i].addEventListener('click', (event) => {
-                let operationId = event.target.closest('.delete-btn').getAttribute('data-id');
-                let deleteBtn = document.getElementById('delete-btn');
-                deleteBtn.setAttribute('href', '/delete-expense?id=' + operationId);
+        const deleteButtons: NodeListOf<Element> = document.querySelectorAll('.delete-btn');
+        for (let i: number = 0; i < deleteButtons.length; i++) {
+            deleteButtons[i].addEventListener('click', (event: Event): void => {
+                if(event.target instanceof HTMLElement) {
+                const targetElement: HTMLElement | null = event.target.closest('.delete-btn');
+                if(targetElement) {
+                let operationId: string | null = targetElement.getAttribute('data-id');
+                let deleteBtn:  HTMLElement | null = document.getElementById('delete-btn');
+                (deleteBtn as HTMLElement).setAttribute('href', '/delete-expense?id=' + operationId);
+                }
+            }
             });
         }
     }

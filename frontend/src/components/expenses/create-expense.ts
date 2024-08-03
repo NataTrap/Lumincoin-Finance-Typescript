@@ -1,14 +1,21 @@
 import {HttpUtils} from "../../utils/http-utils";
-import {DefaultResponseType} from "../../types/default-response.type";
+import { OpenNewRoute } from "../../types/route.type";
+import { HttpUtilsResultType } from "../../types/http-utils/httpUtils.type";
+import { ResultCreateCategoryType } from "../../types/result.type";
 
 export class CreateExpense {
-    readonly openNewRoute
+    readonly openNewRoute: OpenNewRoute
     readonly inputElement: HTMLInputElement | null
-    constructor(openNewRoute) {
+    private createButton:  HTMLElement | null
+    constructor(openNewRoute: OpenNewRoute) {
         this.openNewRoute = openNewRoute;
         this.inputElement = document.querySelector('input');
-        document.getElementById('create-button').addEventListener('click', this.saveCategory.bind(this));
-    }
+        this.createButton =  document.getElementById('create-button')
+        if(this.createButton) {
+            this.createButton.addEventListener('click', this.saveCategory.bind(this));
+        }
+        }
+      
 
     private validateForm(): boolean{
         let isValid: boolean = true;
@@ -23,18 +30,17 @@ export class CreateExpense {
         return isValid;
     }
 
-    async saveCategory(e){
+    async saveCategory(e: Event){
         e.preventDefault;
         if(this.validateForm()){
-            const result  = await HttpUtils.request('/categories/expense', 'POST', true, {
-                title: this.inputElement.value
+            const result: HttpUtilsResultType<ResultCreateCategoryType>  = await HttpUtils.request('/categories/expense', 'POST', true, {
+                title: (this.inputElement as HTMLInputElement).value
             });
 
             if(result.redirect) {
                 return this.openNewRoute(result.redirect);
             }
             if (result.error || !result.response || (result.response && result.response.error)) {
-                console.log(result.response.message);
                 return alert('Возникла ошибка добавлении категории расхода');
             }
             return this.openNewRoute('/expense');

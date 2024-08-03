@@ -1,20 +1,40 @@
 import {HttpUtils} from "../../utils/http-utils";
 import {AuthUtils} from "../../utils/auth-utils";
+import { OpenNewRoute } from "../../types/route.type";
+import { FieldsType } from "../../types/filds.type";
+import { HttpUtilsResultType } from "../../types/http-utils/httpUtils.type";
+import { SignUpResponseType } from "../../types/auth/sign-up-response.type";
+import { DefaultErrorResponseType } from "../../types/default-error-response.type";
+import { LoginResponseType } from "../../types/auth/logi-in-response.type";
 
 export class Form {
-    
-    constructor(openNewRote, page) {
+    private openNewRoute: OpenNewRoute
+    private page: string
+    private fields: FieldsType[] = []
+    private processElement: HTMLElement | null
+    private passwordElement: HTMLInputElement | null
+    private nameElement: HTMLInputElement | null
+    private lastNameElement: HTMLInputElement | null
+    private emailElement: HTMLInputElement | null
+    private commonErrorLoginElement: HTMLElement | null
+    private commonErrorSignUpElement: HTMLElement | null
+    private confirmPasswordElement: HTMLInputElement | null
+    private rememberMeElement: HTMLInputElement | null
+    private  validateField: any
+
+
+    constructor(openNewRote: OpenNewRoute, page: string) {
         this.openNewRoute = openNewRote
         this.page = page
-        this.processElement = document.getElementById('process-button')
-        this.passwordElement = document.getElementById('password');
-        this.nameElement = document.getElementById('name')
-        this.lastNameElement = document.getElementById('lastName')
-        this.emailElement = document.getElementById('email')
+        this.processElement = document.getElementById('process-button') as HTMLElement
+        this.passwordElement = document.getElementById('password') as HTMLInputElement
+        this.nameElement = document.getElementById('name') as HTMLInputElement | null
+        this.lastNameElement = document.getElementById('lastName') as HTMLInputElement
+        this.emailElement = document.getElementById('email') as HTMLInputElement
         this.commonErrorLoginElement = document.getElementById('common-error-login')
         this.commonErrorSignUpElement = document.getElementById('common-error-sign-up')
-        this.confirmPasswordElement = document.getElementById('confirm-password')
-        this.rememberMeElement = document.getElementById('flexCheckDefault')
+        this.confirmPasswordElement = document.getElementById('confirm-password') as HTMLInputElement
+        this.rememberMeElement = document.getElementById('flexCheckDefault') as HTMLInputElement
 
         this.fields = [
             {
@@ -40,14 +60,14 @@ export class Form {
                     name: 'name',
                     id: 'name',
                     element: null,
-                    // regex: /^[A-Z][А-Я][a-z][а-я]+\s*$/,
+                    regex: /^[A-Z][А-Я][a-z][а-я]+\s*$/,
                     valid: false,
                 },
                 {
                     name: 'lastName',
                     id: 'lastName',
                     element: null,
-                    // regex: /^[A-Z][А-Я][a-z][а-я]+\s*$/,
+                    regex: /^[A-Z][А-Я][a-z][а-я]+\s*$/,
                     valid: false,
                 }
             )
@@ -57,91 +77,114 @@ export class Form {
                     name: 'confirm-password',
                     id: 'confirm-password',
                     element: null,
-                    regex: "",
                     valid: false,
                 }
             )
         }
 
 
-        const that = this;
-        this.fields.forEach(item => {
-            item.element = document.getElementById(item.id);
-            item.element.onchange = function () {
-                that.validateField.call(that, item, this);
+        const that: Form = this;
+        this.fields.forEach((item: FieldsType) => {
+            item.element = document.getElementById(item.id)
+            if (item.element) {
+                item.element.onchange = function () {
+                    that.validateField.call(that, item,  <HTMLInputElement>this);
+                }
             }
+           
         });
 
-        this.processElement.onclick = function () {
-            that.processForm();
-        }
-    }
-
-
-    validateField(field, element) {
-        if (!element.value || !element.value.match(field.regex)) {
-            element.style.borderColor = 'red';
-            field.valid = false;
-
-        } else {
-            element.style.borderColor = '';
-            field.valid = true;
-        }
-
-        if (this.page === 'sign-up') {
-            this.confirmPasswordElement.style.borderColor = ''
-            if (this.passwordElement.value === this.confirmPasswordElement.value) {
-                this.confirmPasswordElement.style.borderColor = ''
-            } else {
-                this.confirmPasswordElement.style.borderColor = 'red'
+            if(this.processElement) {
+                this.processElement.onclick = function () {
+                    that.processForm();
+                }
             }
-        }
-
-        this.validateForm()
+       
     }
 
 
-    validateForm() {
+    // private validateField(field: FieldsType, element: HTMLInputElement): void {
+    //     if(element.parentNode) {
+    //         if (!element.value || !element.value.match(field.regex)) {
+    //             (element.parentNode as HTMLElement).style.borderColor = 'red';
+    //             field.valid = false;
+    
+    //         } else {
+    //             element.style.borderColor = '';
+    //             field.valid = true;
+    //         }
+
+    //     }
+       
+    //     if (this.page === 'sign-up') {
+    //         if (this.confirmPasswordElement) {
+    //             this.confirmPasswordElement.style.borderColor = ''
+    //             if (this.passwordElement) {
+    //                 if (this.passwordElement.value === this.confirmPasswordElement.value) {
+    //                     (this.confirmPasswordElement).style.borderColor = ''
+    //                 } else {
+    //                     this.confirmPasswordElement.style.borderColor = 'red'
+    //                 }
+    //             }              
+    //         }
+           
+    //     }
+    //     this.validateForm()
+    // }
+
+
+    private validateForm(): boolean {
             const validForm = this.fields.every(item => item.valid);
+        
             if (validForm) {
-                this.processElement.removeAttribute('disabled')
+                if (this.processElement) {
+                     this.processElement.removeAttribute('disabled')
+                }
             } else {
-                this.processElement.setAttribute('disabled', 'disabled')
+                if (this.processElement) {
+                    this.processElement.setAttribute('disabled', 'disabled')
+                }
+               
             }
 
             return validForm
     }
 
-    async processForm() {
+   private  async processForm(): Promise<void> {
         if (this.validateForm()) {
             try {
                 if (this.page === 'sign-up') {
+                    if (this.commonErrorSignUpElement) {
+                        this.commonErrorSignUpElement.style.display = 'none';
+                    }
+                   
 
-                    this.commonErrorSignUpElement.style.display = 'none';
-
-                    let result = await HttpUtils.request('/signup', 'POST', false, {
-                        name: this.nameElement.value,
-                        lastName: this.lastNameElement.value,
-                        email: this.emailElement.value,
-                        password: this.passwordElement.value,
-                        passwordRepeat: this.passwordElement.value,
+                    let result: HttpUtilsResultType<SignUpResponseType> = await HttpUtils.request('/signup', 'POST', false, {
+                        name: (this.nameElement as HTMLInputElement).value,
+                        lastName: (this.lastNameElement as HTMLInputElement).value,
+                        email: (this.emailElement as HTMLInputElement).value,
+                        password: (this.passwordElement as HTMLInputElement).value,
+                        passwordRepeat: (this.passwordElement as HTMLInputElement).value,
 
                     } )
-
-                    if (result.error || !result.response || (result.response && ( !result.response.user || (result.response.user && (!result.response.user.id || !result.response.user.email || !result.response.user.name || !result.response.user.lastName))))) {
-                        this.commonErrorSignUpElement.style.display = 'block';
-                        throw new Error(result.message);
+                    const response: DefaultErrorResponseType |SignUpResponseType | null = result.response;
+                    if (result.error || !response || (response && !(response as SignUpResponseType).user)) {
+                        if (this.commonErrorSignUpElement) {
+                            this.commonErrorSignUpElement.style.display = 'block';
+                        }
+                      
+                        throw new Error('SignUp failed');
                     }
-
-
-
-
-                    AuthUtils.setAuthInfo(null, null, {
-                        name: result.response.user.name,
-                        email: this.emailElement.value,
-                        lastName: result.response.user.lastName,
-                        id: result.response.user.id
-                    })
+                    if (result.response)  {
+                        AuthUtils.setAuthInfo('', '', {
+                       
+                            name: result.response.user.name,
+                            email: (this.emailElement as HTMLInputElement).value,
+                            lastName: result.response.user.lastName,
+                            id: result.response.user.id
+                        })
+                    }
+                  
 
                     if (localStorage.getItem('accessToken')) {
                         return this.openNewRoute('/login')
@@ -158,30 +201,32 @@ export class Form {
 
 
         if (this.page === 'login') {
-
             // this.commonErrorLoginElement.style.display = 'none'
             try {
 
-                const result = await HttpUtils.request('/login', 'POST', false, {
-                    email: this.emailElement.value,
-                    password: this.passwordElement.value,
-                    rememberMe: this.rememberMeElement.checked
+                const result: HttpUtilsResultType<LoginResponseType> = await HttpUtils.request('/login', 'POST', false, {
+                    email: (this.emailElement as HTMLInputElement).value,
+                    password: (this.passwordElement as HTMLInputElement).value,
+                    rememberMe: (this.rememberMeElement as HTMLInputElement ).checked
                 })
 
-                if (result.error || !result.response || (result.response && ( !result.response.tokens || (result.response.tokens && (!result.response.tokens.accessToken || !result.response.tokens.refreshToken || !result.response.user ||
-                    (result.response.user && (!result.response.user.name || !result.response.user.lastName || !result.response.user.id) )))))) {
-                    // this.commonErrorSignUpElement.style.display = 'block';
-                    throw new Error(result.message);
-                }
+                const response: DefaultErrorResponseType | LoginResponseType | null = result.response;
+                    if (result.error || !response || (response && !(response as LoginResponseType).user)) {
+                        if (this.commonErrorSignUpElement) {
+                            this.commonErrorSignUpElement.style.display = 'block';
+                        }
+                      
+                        throw new Error('Login failed');
+                    }
 
-
-
-
-                AuthUtils.setAuthInfo(result.response.tokens.accessToken, result.response.tokens.refreshToken, {
-                    name: result.response.user.name,
-                    lastName: result.response.user.lastName,
-                    id: result.response.user.id
-                })
+                    if (result.response) {
+                        AuthUtils.setAuthInfo(result.response.tokens.accessToken, result.response.tokens.refreshToken, {
+                            name: result.response.user.name,
+                            lastName: result.response.user.lastName,
+                            id: result.response.user.id
+                        })
+                    }
+               
 
 
 

@@ -17,17 +17,21 @@ import {CreateExpense} from "./components/expenses/create-expense";
 import {CreateExpenseInIncomeExpense} from "./components/income-expenses/create-expense-in-income-expense";
 import {CreateIncomeInIncomeExpense} from "./components/income-expenses/create-income-in-income-expense";
 import {RouteType} from "./types/route.type";
+import { UserInfoType } from "./types/user-info.type";
+import { HttpUtilsResultType } from "./types/http-utils/httpUtils.type";
+import { ResultBalanceType } from "./types/result.type";
 
 
 export class Router {
-    readonly titlePageElement: HTMLElement | null
-    readonly contentPageElement: HTMLElement | null
-
+    private titlePageElement: HTMLElement | null
+    private contentPageElement: HTMLElement | null
+    private profileNameElement: HTMLElement | null
     private routes: RouteType[]
 
     constructor() {
         this.titlePageElement = document.getElementById('title');
         this.contentPageElement = document.getElementById('content');
+        this.profileNameElement = null
         this.initEvents();
         this.routes = [
             {
@@ -43,7 +47,6 @@ export class Router {
                 route: '/login',
                 title: 'Авторизация',
                 filePathTemplate: '/templates/auth/login.html',
-                useLayout: false,
                 load: () => {
                     new Form(this.openNewRoute.bind(this), 'login');
                 }
@@ -52,7 +55,6 @@ export class Router {
                 route: '/sign-up',
                 title: 'Регистрация',
                 filePathTemplate: '/templates/auth/sign-up.html',
-                useLayout: false,
                 load: () => {
                     new Form(this.openNewRoute.bind(this), 'sign-up');
                 }
@@ -192,9 +194,8 @@ export class Router {
     }
 
     public async openNewRoute(url: string): Promise<void> {
-        const currentRoute:  string  = window.location.pathname;
         history.pushState({}, '', url);
-        await this.activateRoute(null, currentRoute)
+        await this.activateRoute()
     }
 
    public async clickHandler(e: Event): Promise<void> {
@@ -238,10 +239,10 @@ export class Router {
                     }
 
                     this.profileNameElement = document.getElementById('current-name')
-                    let userInfo = AuthUtils.getAuthInfo(AuthUtils.userInfoTokenKey);
-                    if (userInfo) {
-                        userInfo = JSON.parse(userInfo)
-                        if (userInfo.name) {
+                    const userInfoStr = AuthUtils.getAuthInfo(AuthUtils.userInfoTokenKey);
+                    if (userInfoStr) {
+                        const userInfo = JSON.parse(userInfoStr) as UserInfoType;
+                        if (userInfo.name && this.profileNameElement) {
                             this.profileNameElement.innerText = userInfo.name + ' ' + userInfo.lastName
                         }
                     } else {
@@ -269,24 +270,25 @@ export class Router {
     }
 
     public async getBalance(): Promise<void> {
-        const result = await HttpUtils.request('/balance')
+        const result: HttpUtilsResultType<ResultBalanceType> = await HttpUtils.request('/balance', 'GET', true, null )
 
         if (result.redirect) {
             return this.openNewRoute(result.redirect);
         }
+        
         if (result.error || !result.response || (result.response && result.response.error)) {
             return alert('Возникла ошибка при запросе Баланса. Обратитесь в поддержку ')
         }
-            const balance = document.getElementById('balance')
-            if (balance) {
-                balance.innerText = result.response.balance + '$'  
-            }
-       
+
+        const balance: HTMLElement | null = document.getElementById('balance')
+        if (balance) {
+            balance.innerText = result.response + '$'  
+        }
     }
 
-    private activateMenuItem(route: string): void {
+    private activateMenuItem(route: RouteType): void {
         document.querySelectorAll('#sidebar .nav-link').forEach(item => {
-            const href = item.getAttribute('href')
+            const href = item.getAttribute('href') || '';
             if ((route.route.includes(href) && href !== '/') || (route.route === '/' && href === '/')) {
                 item.classList.add('active')
             } else {

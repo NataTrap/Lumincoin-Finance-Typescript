@@ -1,0 +1,1 @@
+export type DateFilterType = (period: string, dateFrom: string, dateTo: string) => Promise<void>;

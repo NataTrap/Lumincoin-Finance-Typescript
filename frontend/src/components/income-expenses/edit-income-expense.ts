@@ -1,28 +1,37 @@
+import { CategoryType } from "../../types/category.type";
+import { ChangedDataType } from "../../types/change-data.type";
+import { HttpUtilsResultType } from "../../types/http-utils/httpUtils.type";
+import { OperationsType } from "../../types/operations.type";
+import { OpenNewRoute } from "../../types/route.type";
 import {HttpUtils} from "../../utils/http-utils";
 
 export class EditIncomeExpense {
-    private openNewRoute: string
+    private openNewRoute: OpenNewRoute
+    private incomeOperation: CategoryType[] = []; //сразу инициализируем, так как в конструкторе может сработать return
+    private expenseOperation: CategoryType[] = [];
     private typeSelectElement: HTMLSelectElement | null
-    private categorySelectElement: HTMLElement | null
-    private sumElement: HTMLElement | null
-    private dateElement: HTMLElement | null
-    private commentElement: HTMLElement | null
+    private categorySelectElement: HTMLSelectElement | null
+    private sumElement: HTMLInputElement | null
+    private dateElement: HTMLInputElement | null
+    private commentElement: HTMLInputElement | null
+    private operationOriginalData: OperationsType | null = null;
 
-    constructor(openNewRoute: string) {
+    constructor(openNewRoute: OpenNewRoute) {
         this.openNewRoute = openNewRoute;
+        this.typeSelectElement = document.getElementById('type-select') as HTMLSelectElement
+        this.categorySelectElement = document.getElementById('category') as HTMLSelectElement
+        this.sumElement = document.getElementById('sum') as HTMLInputElement
+        this.dateElement = document.getElementById('date') as HTMLInputElement
+        this.commentElement = document.getElementById('comment') as HTMLInputElement
+
         const urlParams = new URLSearchParams(window.location.search)
         const id = urlParams.get('id')
         if (!id) {
-            return this.openNewRoute('/')
+            this.openNewRoute('/');
+            return;
         }
 
-        this.typeSelectElement = document.getElementById('type-select') as HTMLSelectElement
-        this.categorySelectElement = document.getElementById('category') as HTMLElement
-        this.sumElement = document.getElementById('sum') as HTMLElement
-        this.dateElement = document.getElementById('date')
-        this.commentElement = document.getElementById('comment')
-        // this.idElement = document.getElementById('id')
-
+       
 
         if(this.typeSelectElement) {
             this.typeSelectElement.addEventListener('change', () => { //если юзер поменял тип в селекте, то меняем наполнение для категорий
@@ -39,17 +48,17 @@ export class EditIncomeExpense {
     }
 
     private async getIncomeCategories(): Promise<void> {
-        const result = await HttpUtils.request('/categories/income');
-        this.incomeOperation = result.response;
+        const result: HttpUtilsResultType<CategoryType[]> = await HttpUtils.request('/categories/income');
+        this.incomeOperation = result.response as CategoryType[];
     }
 
     private async getExpenseCategories(): Promise<void> {
-        const result = await HttpUtils.request('/categories/expense');
-        this.expenseOperation = result.response;
+        const result: HttpUtilsResultType<CategoryType[]> = await HttpUtils.request('/categories/expense');
+        this.expenseOperation = result.response as CategoryType[];
     }
 
 
-    public showCategories(incomeOperation: string, expenseOperation: string): void {
+    public showCategories(incomeOperation: CategoryType[], expenseOperation: CategoryType[]): void {
         if (this.categorySelectElement) {
             this.categorySelectElement.innerHTML = '';
         }
@@ -59,7 +68,10 @@ export class EditIncomeExpense {
                 const optionElement = document.createElement('option');
                 optionElement.setAttribute("value", incomeOperation[i].id);
                 optionElement.innerText = incomeOperation[i].title;
-                this.categorySelectElement.appendChild(optionElement);
+                if(this.categorySelectElement) {
+                    this.categorySelectElement.appendChild(optionElement);
+                }
+              
             }
 
         } else if (this.typeSelectElement.value === 'expense') {
@@ -67,29 +79,36 @@ export class EditIncomeExpense {
                 const optionElement = document.createElement('option');
                 optionElement.setAttribute("value", expenseOperation[i].id);
                 optionElement.innerText = expenseOperation[i].title;
-                this.categorySelectElement.appendChild(optionElement);
+                if(this.categorySelectElement) {
+                    this.categorySelectElement.appendChild(optionElement);
+                }
+              
             }
         }
        }
     }
 
 
-    private async getOperation(id: number): Promise<void> {
-        const result = await HttpUtils.request('/operations/' + id)
+    private async getOperation(id: string): Promise<void> {
+        const result: HttpUtilsResultType<OperationsType> = await HttpUtils.request('/operations/' + id)
         if (result.redirect) {
             return this.openNewRoute(result.redirect)
         }
 
-        if (result.error || !result.response || (result.response && result.response.error)) {
+        if (result.error || !result.response || result.response) {
             return alert('Возникла ошибка при запросе операции. Обратитесь в поддержку')
         }
 
-        this.operationOriginalData = result.response
-        for (let i = 0; i < this.typeSelectElement.options.length; i++) {
-            if (this.typeSelectElement.options[i].value === result.response.type) {
-                this.typeSelectElement.selectedIndex = i;
+        this.operationOriginalData = result.response as OperationsType
+
+        if(this.typeSelectElement) {
+            for (let i = 0; i < this.typeSelectElement.options.length; i++) {
+                if (this.typeSelectElement.options[i].value === result.response.type) {
+                    this.typeSelectElement.selectedIndex = i;
+                }
             }
         }
+       
 
         await this.getIncomeCategories();
         await this.getExpenseCategories();
@@ -97,21 +116,24 @@ export class EditIncomeExpense {
         this.showCategories(this.incomeOperation, this.expenseOperation);
     }
 
-    showOperation(operation) {
-        this.sumElement.value = operation.amount
-        this.categorySelectElement.value = operation.category
-        this.dateElement.value = operation.date
-        this.commentElement.value = operation.comment
-        if (this.typeSelectElement) {
-            for (let i = 0; i < this.typeSelectElement.options.length; i++) {
-                if (this.typeSelectElement.options[i].value === operation.type) {
-                    this.typeSelectElement.selectedIndex = i
+    private showOperation(operation: OperationsType): void {
+        if(this.sumElement && this.categorySelectElement && this.dateElement && this.commentElement) {
+            this.sumElement.value = operation.amount
+            this.categorySelectElement.value = operation.category
+            this.dateElement.value = operation.date
+            this.commentElement.value = operation.comment
+            if (this.typeSelectElement) {
+                for (let i = 0; i < this.typeSelectElement.options.length; i++) {
+                    if (this.typeSelectElement.options[i].value === operation.type) {
+                        this.typeSelectElement.selectedIndex = i
+                    }
                 }
             }
-        }
+        } 
+       
     }
 
-    validateForm() {
+    private validateForm(): boolean {
         let isValid = true;
         let textInputArray = [
             this.typeSelectElement,
@@ -122,10 +144,10 @@ export class EditIncomeExpense {
         ]
         for (let i = 0; i < textInputArray.length; i++) {
 
-            if (textInputArray[i].value) {
-                textInputArray[i].classList.remove('is-invalid');
+            if (textInputArray[i]?.value) {
+                textInputArray[i]?.classList.remove('is-invalid');
             } else {
-                textInputArray[i].classList.add('is-invalid');
+                textInputArray[i]?.classList.add('is-invalid');
                 isValid = false
             }
         }
@@ -134,44 +156,51 @@ export class EditIncomeExpense {
     }
 
 
-    private async updateIncomeExpense(e: any, id: number): Promise<> {
+    private async updateIncomeExpense(e: Event, id: string): Promise<void> {
         e.preventDefault()
         if (this.validateForm()) {
-            const changedData = {}
-            if (this.sumElement.value !== this.operationOriginalData.amount) {
-                changedData.amount = this.sumElement.value
-            }
-            if (this.typeSelectElement.value !== this.operationOriginalData.type) {
-                changedData.type = this.sumElement.value
-            }
-            if (this.categorySelectElement.value !== this.operationOriginalData.category) {
-                changedData.category = this.categorySelectElement.value
-            }
-            if (this.dateElement.value !== this.operationOriginalData.date) {
-                changedData.date = this.dateElement.value
-            }
-            if (this.commentElement.value !== this.operationOriginalData.comment) {
-                changedData.comment = this.commentElement.value
-            }
+            const changedData: ChangedDataType = {}
+            if(this.sumElement && this.typeSelectElement && this.categorySelectElement && this.dateElement && this.commentElement && this.operationOriginalData ) {
 
+                if (this.sumElement.value !== this.operationOriginalData.amount) {
+                    changedData.amount = this.sumElement.value
+                }
+                if (this.typeSelectElement.value !== this.operationOriginalData.type) {
+                    changedData.type = this.sumElement.value
+                }
+                if (this.categorySelectElement.value !== this.operationOriginalData.category) {
+                    changedData.category = this.categorySelectElement.value
+                }
+                if (this.dateElement.value !== this.operationOriginalData.date) {
+                    changedData.date = this.dateElement.value
+                }
+                if (this.commentElement.value !== this.operationOriginalData.comment) {
+                    changedData.comment = this.commentElement.value
+                }
+            }
+            
             if (Object.keys(changedData).length > 0) {
+                if (this.operationOriginalData) {
+                    const result: HttpUtilsResultType<OperationsType> = await HttpUtils.request('/operations/' + this.operationOriginalData.id, 'PUT', true, {
+                        type: (this.typeSelectElement as HTMLSelectElement).value,
+                        amount: (this.sumElement as HTMLInputElement).value,
+                        date: (this.dateElement as HTMLInputElement).value,
+                        comment: (this.commentElement as HTMLInputElement).value,
+                        category_id: Number((this.categorySelectElement as HTMLSelectElement).value)
+                    })
 
-                const result = await HttpUtils.request('/operations/' + this.operationOriginalData.id, 'PUT', true, {
-                    type: this.typeSelectElement.value,
-                    amount: this.sumElement.value,
-                    date: this.dateElement.value,
-                    comment: this.commentElement.value,
-                    category_id: Number(this.categorySelectElement.value)
-                }, changedData)
-
-                if (result.redirect) {
-                    return this.openNewRoute(result.redirect)
+                    if (result.redirect) {
+                        return this.openNewRoute(result.redirect)
+                    }
+    
+                    if (result.error || !result.response || result.response ) {
+                        return alert('Возникла ошибка при Редактирование. Обратитесь в поддержку')
+                    }
+                    return this.openNewRoute('/income-expenses')
+    
                 }
-
-                if (result.error || !result.response || (result.response && result.response.error)) {
-                    return alert('Возникла ошибка при Редактирование. Обратитесь в поддержку')
-                }
-                return this.openNewRoute('/income-expenses')
+              
+              
             }
         }
     }

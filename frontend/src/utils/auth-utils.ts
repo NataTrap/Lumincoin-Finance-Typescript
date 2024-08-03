@@ -22,21 +22,17 @@ export class AuthUtils {
 
     }
 
-    public static getAuthInfo (key: string | null): string | AuthInfoType | null {
+    public static getAuthInfo(): AuthInfoType;
+    public static getAuthInfo(key: string): string | null;
+    public static getAuthInfo(key?: string): AuthInfoType | string | null {
         if (key && [this.accessTokenKey, this.refreshTokenKey, this.userInfoTokenKey].includes(key)) {
-            return  localStorage.getItem(key)
-        }
-        else {
-            const accessToken: string = localStorage.getItem(this.accessTokenKey) || '';
-            const refreshToken: string = localStorage.getItem(this.refreshTokenKey) || '';
-            let name: string = localStorage.getItem(this.userInfoTokenKey) || '';
-
-            name = (JSON.parse(name) as UserInfoType).name;
+            return localStorage.getItem(key)
+        } else {
             return {
-                accessToken,
-                refreshToken,
-                name,
-            };
+                accessToken: localStorage.getItem(this.accessTokenKey),
+                refreshToken: localStorage.getItem(this.refreshTokenKey),
+                userInfo: localStorage.getItem(this.userInfoTokenKey),
+            }
         }
     }
 
@@ -57,7 +53,7 @@ export class AuthUtils {
 
             if (response && response.status === 200) {
                 const tokens: RefreshResponseType | null = await response.json()
-                if (tokens && !tokens.error) {
+                if (tokens && !tokens.error && tokens.tokens.accessToken && tokens.tokens.refreshToken) {
                     this.setAuthInfo(tokens.tokens.accessToken, tokens.tokens.refreshToken);
                     result = true
                 }

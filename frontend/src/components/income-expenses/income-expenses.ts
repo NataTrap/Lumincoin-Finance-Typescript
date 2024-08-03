@@ -1,37 +1,43 @@
 import {HttpUtils} from "../../utils/http-utils";
 import {DateFilter} from "../../config/data-filter";
+import { OpenNewRoute } from "../../types/route.type";
+import { HttpUtilsResultType } from "../../types/http-utils/httpUtils.type";
+import { OperationsType } from "../../types/operations.type";
+import { DefaultErrorResponseType } from "../../types/default-error-response.type";
 
 export class IncomeExpenses {
-    constructor(openNewRoute) {
+    private openNewRoute: OpenNewRoute
+    constructor(openNewRoute: OpenNewRoute) {
         this.openNewRoute = openNewRoute;
         new DateFilter(this.getOperations.bind(this)); //создаем экземпляр класса с фильтром и передаем ему метод для запроса с фильтром
         this.getOperations('all').then();
     }
 
 
-    async getOperations(period, dateFrom = '', dateTo = '') { //запрос на сервер для получения операций с фильтром
-        let url = '/operations?period=interval&dateFrom=' + dateFrom + '&dateTo=' + dateTo; //данные подставляются из фильтра
+   private async getOperations(period: string, dateFrom: string = '', dateTo: string = ''): Promise<void> { //запрос на сервер для получения операций с фильтром
+        let url: string = '/operations?period=interval&dateFrom=' + dateFrom + '&dateTo=' + dateTo; //данные подставляются из фильтра
         if (period === 'all') {
             url = '/operations?period=all';
         }
-        const result = await HttpUtils.request(url);
+        const result: HttpUtilsResultType<OperationsType> = await HttpUtils.request(url);
         if (result.redirect) {
             return this.openNewRoute(result.redirect);
         }
-
-        if (result.error || !result.response || (result.response && result.response.error)) {
+        if (result.error || !result.response || (result.response && (result.response as DefaultErrorResponseType).error)) {
             return alert('Возникла ошибка при запросе операций');
         }
-        this.showIncomeAndExpensesList(result.response);
+        this.showIncomeAndExpensesList(result.response as OperationsType);
     }
 
 
-    showIncomeAndExpensesList(operations) { //рисуем таблицу с операциями
-        const recordsElement = document.getElementById('records');
-        recordsElement.innerHTML = ''; // Очищаем таблицу перед отображением новых данных
+    private showIncomeAndExpensesList(operations: OperationsType[]) { //рисуем таблицу с операциями
+        const recordsElement: HTMLElement | null = document.getElementById('records');
+        if(recordsElement) {
+            recordsElement.innerHTML = ''; // Очищаем таблицу перед отображением новых данных
+        }
         for (let i = 0; i < operations.length; i++) {
-            const trElement = document.createElement('tr');
-            trElement.insertCell().innerText = i + 1;
+            const trElement: HTMLTableRowElement = document.createElement('tr');
+            trElement.insertCell().innerText = `${i + 1}`;
             trElement.classList.add('trelement')
             trElement.insertCell().innerText = operations[i].type === 'expense' ? 'Расход' : 'Доход';
             trElement.cells[1].className = operations[i].type === 'expense' ? 'text-danger' : 'text-success';
@@ -57,19 +63,27 @@ export class IncomeExpenses {
                 '</a>' +
                 '</div>';
 
-            recordsElement.appendChild(trElement);
+                if(recordsElement) {
+                    recordsElement.appendChild(trElement);
+                }
+           
         }
 
        this.operationDeleteEventListeners()
     }
 
         operationDeleteEventListeners() { //передаем id операции в каждую кнопку удаления
-            const deleteButtons = document.querySelectorAll('.delete-btn');
-            for (let i = 0; i < deleteButtons.length; i++) {
-                deleteButtons[i].addEventListener('click', (event) => {
-                    let operationId = event.target.closest('.delete-btn').getAttribute('data-id');
-                    let deleteBtn = document.getElementById('delete-btn');
-                    deleteBtn.setAttribute('href', '/delete-income-expense?id=' + operationId);
+            const deleteButtons: NodeListOf<Element> = document.querySelectorAll('.delete-btn');
+            for (let i: number = 0; i < deleteButtons.length; i++) {
+                deleteButtons[i].addEventListener('click', (event: Event): void => {
+                    if(event.target instanceof HTMLElement) {
+                        const targetElement: HTMLElement | null = event.target.closest('.delete-btn');
+                        if(targetElement) {
+                            let operationId: string | null = targetElement.getAttribute('data-id');
+                            let deleteBtn: HTMLElement | null = document.getElementById('delete-btn');
+                            (deleteBtn as HTMLElement).setAttribute('href', '/delete-income-expense?id=' + operationId);
+                        }
+                    }
                 });
             }
         }

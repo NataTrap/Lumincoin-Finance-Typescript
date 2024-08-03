@@ -1,25 +1,30 @@
+import { DefaultErrorResponseType } from "../../types/default-error-response.type";
+import { HttpUtilsResultType } from "../../types/http-utils/httpUtils.type";
+import { OpenNewRoute } from "../../types/route.type";
 import {HttpUtils} from "../../utils/http-utils";
 
 export class DeleteIncomeExpense {
-    constructor(openNewRoute) {
+    private openNewRoute: OpenNewRoute
+    constructor(openNewRoute: OpenNewRoute) {
         this.openNewRoute = openNewRoute;
         const urlParams = new URLSearchParams(window.location.search); //находим нужный id
         const id = urlParams.get('id');
         if(!id){
-            return this.openNewRoute('/');
+            this.openNewRoute('/');
+            return 
         }
         this.deleteOperation(id).then();
 
     }
 
-    async deleteOperation(id){ //удаляем операцию
-        const result = await HttpUtils.request('/operations/' + id, 'DELETE', true);
+    private async deleteOperation(id: string): Promise<void>{ //удаляем операцию
+        const result: HttpUtilsResultType<DefaultErrorResponseType> = await HttpUtils.request('/operations/' + id, 'DELETE', true);
         if(result.redirect){
             return this.openNewRoute(result.redirect);
         }
 
         if (result.error || !result.response || (result.response && result.response.error)) {
-            console.log(result.response.message);
+            
             return alert('Возникла ошибка при удалении операции');
         }
         return this.openNewRoute('/income-expenses');
