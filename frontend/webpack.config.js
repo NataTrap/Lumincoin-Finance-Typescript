@@ -27,7 +27,7 @@ module.exports = {
     },
     cache: false,
     output: {
-        filename: 'app.ts',
+        filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
         clean: true,
         publicPath: '/'
@@ -38,7 +38,7 @@ module.exports = {
         },
         liveReload: true,
         compress: true,
-        port: 9000,
+        port: 9003,
         historyApiFallback: true,
     },
     plugins: [

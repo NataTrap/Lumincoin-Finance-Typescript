@@ -7,8 +7,12 @@ import { DefaultErrorResponseType } from "../../types/default-error-response.typ
 
 export class IncomeExpenses {
     private openNewRoute: OpenNewRoute
+    private id: string | null
     constructor(openNewRoute: OpenNewRoute) {
         this.openNewRoute = openNewRoute;
+        const urlParams = new URLSearchParams(window.location.search)
+        this.id = urlParams.get('id');
+
         new DateFilter(this.getOperations.bind(this)); //создаем экземпляр класса с фильтром и передаем ему метод для запроса с фильтром
         this.getOperations('all').then();
     }
@@ -26,11 +30,15 @@ export class IncomeExpenses {
         if (result.error || !result.response || (result.response && (result.response as DefaultErrorResponseType).error)) {
             return alert('Возникла ошибка при запросе операций');
         }
-        this.showIncomeAndExpensesList(result.response as OperationsType);
+      
+
+        if(Array.isArray(result.response)) {
+             this.showIncomeAndExpensesList(result.response as OperationsType[]);
+        }
     }
 
 
-    private showIncomeAndExpensesList(operations: OperationsType[]) { //рисуем таблицу с операциями
+    private showIncomeAndExpensesList(operations: OperationsType[]): void { //рисуем таблицу с операциями
         const recordsElement: HTMLElement | null = document.getElementById('records');
         if(recordsElement) {
             recordsElement.innerHTML = ''; // Очищаем таблицу перед отображением новых данных
@@ -72,19 +80,19 @@ export class IncomeExpenses {
        this.operationDeleteEventListeners()
     }
 
-        operationDeleteEventListeners() { //передаем id операции в каждую кнопку удаления
-            const deleteButtons: NodeListOf<Element> = document.querySelectorAll('.delete-btn');
-            for (let i: number = 0; i < deleteButtons.length; i++) {
-                deleteButtons[i].addEventListener('click', (event: Event): void => {
-                    if(event.target instanceof HTMLElement) {
-                        const targetElement: HTMLElement | null = event.target.closest('.delete-btn');
-                        if(targetElement) {
-                            let operationId: string | null = targetElement.getAttribute('data-id');
-                            let deleteBtn: HTMLElement | null = document.getElementById('delete-btn');
-                            (deleteBtn as HTMLElement).setAttribute('href', '/delete-income-expense?id=' + operationId);
-                        }
+    private operationDeleteEventListeners(): void { //передаем id операции в каждую кнопку удаления
+        const deleteButtons: NodeListOf<Element> = document.querySelectorAll('.delete-btn');
+        for (let i: number = 0; i < deleteButtons.length; i++) {
+            deleteButtons[i].addEventListener('click', (event: Event): void => {
+                if(event.target instanceof HTMLElement) {
+                    const targetElement: HTMLElement | null = event.target.closest('.delete-btn');
+                    if(targetElement) {
+                        let operationId: string | null = targetElement.getAttribute('data-id');
+                        let deleteBtn: HTMLElement | null = document.getElementById('delete-btn');
+                        (deleteBtn as HTMLElement).setAttribute('href', '/delete-income-expense?id=' + operationId);
                     }
-                });
-            }
+                }
+            });
         }
+    }
 }

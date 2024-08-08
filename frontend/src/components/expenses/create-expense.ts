@@ -2,6 +2,7 @@ import {HttpUtils} from "../../utils/http-utils";
 import { OpenNewRoute } from "../../types/route.type";
 import { HttpUtilsResultType } from "../../types/http-utils/httpUtils.type";
 import { ResultCreateCategoryType } from "../../types/result.type";
+import { DefaultErrorResponseType } from "../../types/default-error-response.type";
 
 export class CreateExpense {
     readonly openNewRoute: OpenNewRoute
@@ -30,7 +31,7 @@ export class CreateExpense {
         return isValid;
     }
 
-    async saveCategory(e: Event){
+    async saveCategory(e: Event): Promise<void>{
         e.preventDefault;
         if(this.validateForm()){
             const result: HttpUtilsResultType<ResultCreateCategoryType>  = await HttpUtils.request('/categories/expense', 'POST', true, {
@@ -39,8 +40,11 @@ export class CreateExpense {
 
             if(result.redirect) {
                 return this.openNewRoute(result.redirect);
+            
             }
-            if (result.error || !result.response || (result.response && result.response.error)) {
+
+            const response: ResultCreateCategoryType | DefaultErrorResponseType | null = result.response;
+            if (result.error || !response || (response && response.error)) {
                 return alert('Возникла ошибка добавлении категории расхода');
             }
             return this.openNewRoute('/expense');

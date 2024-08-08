@@ -99,7 +99,7 @@ export class CreateExpenseInIncomeExpense {
                 return this.openNewRoute(result.redirect);
             }
 
-            if (result.error || !result.response || result.response) {
+            if (result.error || !result.response || (result.response && result.response.error)) {
              
                 return alert('Возникла ошибка при запросе категорий');
             }

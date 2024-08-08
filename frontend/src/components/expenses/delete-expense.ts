@@ -10,16 +10,14 @@ export class DeleteExpense {
         this.openNewRoute = openNewRoute;
         const urlParams: URLSearchParams = new URLSearchParams(window.location.search); //находим нужный id
         const id: string | null = urlParams.get('id');
-
         if (!id) {
             this.openNewRoute('/');
             return
-           
         }
         this.deleteCategory(id).then();
     }
 
-    async deleteCategory(id: string) { //удаляем операцию
+    private async deleteCategory(id: string): Promise<void> { //удаляем операцию
         const result: HttpUtilsResultType<DefaultErrorResponseType>  = await HttpUtils.request('/categories/expense/' + id, 'DELETE', true);
         if (result.redirect) {
             return this.openNewRoute(result.redirect);

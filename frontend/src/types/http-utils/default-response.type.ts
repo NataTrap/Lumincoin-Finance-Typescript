@@ -1,6 +1,9 @@
+import { TokensType } from "../tokens.type"
+
 export type DefaultResponseType = {
     error: boolean,
     message: string
     user?: any
-    tokens?: any
+    tokens?: TokensType
+    balance?: number
 }

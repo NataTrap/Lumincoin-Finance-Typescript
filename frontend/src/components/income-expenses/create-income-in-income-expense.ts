@@ -33,7 +33,7 @@ export class CreateIncomeInIncomeExpense {
     }
 
 
-   private  async getIncomeCategories(): Promise<void> {
+   private async getIncomeCategories(): Promise<void> {
         const result: HttpUtilsResultType<CategoryType[]> = await HttpUtils.request('/categories/income');
         this.incomeOperation = result.response as CategoryType[];
         this.showCategories(this.incomeOperation);
@@ -55,7 +55,7 @@ export class CreateIncomeInIncomeExpense {
 
     private showCategories(incomeOperation: CategoryType[]): void {
         for (let i = 0; i < incomeOperation.length; i++) {
-            const optionElement = document.createElement('option');
+            const optionElement: HTMLOptionElement | null = document.createElement('option');
             optionElement.setAttribute("value", incomeOperation[i].id);
             optionElement.innerText = incomeOperation[i].title;
             if( this.categorySelectElement) {
@@ -68,7 +68,7 @@ export class CreateIncomeInIncomeExpense {
 
 
     private validateForm(): boolean {
-        let isValid = true;
+        let isValid: boolean = true;
         let textInputArray = [
             this.typeSelectElement,
             this.categorySelectElement,
@@ -101,8 +101,7 @@ export class CreateIncomeInIncomeExpense {
                 return this.openNewRoute(result.redirect);
             }
 
-            if (result.error || !result.response || result.response) {
-              
+            if (result.error || !result.response || (result.response && result.response.error)) {
                 return alert('Возникла ошибка при запросе категорий');
             }
             return this.openNewRoute('/income-expenses');

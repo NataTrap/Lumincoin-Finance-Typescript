@@ -96,6 +96,7 @@ export class Expense {
 
         this.categoryDeleteEventListeners()
     }
+    
     categoryDeleteEventListeners() { //передаем id операции в каждую кнопку удаления
         const deleteButtons: NodeListOf<Element> = document.querySelectorAll('.delete-btn');
         for (let i: number = 0; i < deleteButtons.length; i++) {

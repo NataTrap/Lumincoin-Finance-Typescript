@@ -7,14 +7,13 @@ export class DeleteIncomeExpense {
     private openNewRoute: OpenNewRoute
     constructor(openNewRoute: OpenNewRoute) {
         this.openNewRoute = openNewRoute;
-        const urlParams = new URLSearchParams(window.location.search); //находим нужный id
-        const id = urlParams.get('id');
+        const urlParams: URLSearchParams = new URLSearchParams(window.location.search); //находим нужный id
+        const id: string | null = urlParams.get('id');
         if(!id){
             this.openNewRoute('/');
             return 
         }
         this.deleteOperation(id).then();
-
     }
 
     private async deleteOperation(id: string): Promise<void>{ //удаляем операцию
@@ -24,7 +23,6 @@ export class DeleteIncomeExpense {
         }
 
         if (result.error || !result.response || (result.response && result.response.error)) {
-            
             return alert('Возникла ошибка при удалении операции');
         }
         return this.openNewRoute('/income-expenses');

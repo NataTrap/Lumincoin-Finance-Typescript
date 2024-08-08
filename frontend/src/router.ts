@@ -282,7 +282,7 @@ export class Router {
 
         const balance: HTMLElement | null = document.getElementById('balance')
         if (balance) {
-            balance.innerText = result.response + '$'  
+            balance.innerText = result.response.balance + '$'  
         }
     }
 

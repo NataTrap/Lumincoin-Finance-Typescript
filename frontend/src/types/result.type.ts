@@ -7,7 +7,6 @@ export type ResultType = {
 }
 
 export type ResultBalanceType = ResultType & {
-   
         balance: number,
         error: boolean
     

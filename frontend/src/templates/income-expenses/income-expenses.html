@@ -8,11 +8,11 @@
     </div>
     <div class="nav">
         <div class="btn-group button" role="group" aria-label="Basic outlined example">
-            <button type="button" class="btn btn-outline-secondary such-button"  id="today" data-period="today">Сегодня</button>
+            <button type="button" class="btn btn-outline-secondary such-button active"  id="today" data-period="today">Сегодня</button>
             <button type="button" class="btn btn-outline-secondary such-button" id="week" data-period="week">Неделя</button>
             <button type="button" class="btn btn-outline-secondary such-button" data-period="month">Месяц</button>
             <button type="button" class="btn btn-outline-secondary such-button" data-period="year">Год</button>
-            <button type="button" class="btn btn-outline-secondary such-button active" id="all" data-period="all">Все</button>
+            <button type="button" class="btn btn-outline-secondary such-button " id="all" data-period="all">Все</button>
             <button type="button" class="btn btn-outline-secondary such-button" data-period="interval">Интервал</button>
             <div class="date">
                 <span class="s">с </span>
@@ -43,22 +43,22 @@
         </thead>
         <tbody id="records">
 
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle"
-             style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body text-center align-items-center" style="font-weight: 700;font-size: 20px;">
-                        <p>Вы действительно хотите удалить категорию?</p>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-center border-0">
-                        <a href="javascript:void(0)" type="button" class="modal-btn btn btn-success" id="delete-btn"
-                           data-bs-dismiss="modal">Да, удалить</a>
-                        <a  href="javascript:void(0)" type="button" class="modal-btn btn btn-danger" data-bs-dismiss="modal">Не
-                            удалять</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle"
+            style="display: none;" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered">
+           <div class="modal-content">
+             <div class="modal-body text-center align-items-center" style="font-weight: 700;font-size: 20px;">
+               <p>Вы действительно хотите удалить операцию?</p>
+             </div>
+             <div class="modal-footer d-flex justify-content-center border-0">
+               <a href="javascript:void(0)" type="button" class="modal-btn btn btn-success" id="delete-btn"
+                  data-bs-dismiss="modal">Да, удалить</a>
+               <a href="javascript:void(0)" type="button" class="modal-btn btn btn-danger" data-bs-dismiss="modal">Не
+                 удалять</a>
+             </div>
+           </div>
+         </div>
+       </div>
         </tbody>
     </table>
 </div>

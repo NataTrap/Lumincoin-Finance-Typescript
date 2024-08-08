@@ -7,8 +7,8 @@ export class DeleteIncome {
     private openNewRoute: OpenNewRoute
     constructor(openNewRoute: OpenNewRoute) {
         this.openNewRoute = openNewRoute;
-        const urlParams = new URLSearchParams(window.location.search); //находим нужный id
-        const id = urlParams.get('id');
+        const urlParams: URLSearchParams = new URLSearchParams(window.location.search); //находим нужный id
+        const id: string | null = urlParams.get('id');
 
         if (!id) {
             this.openNewRoute('/');

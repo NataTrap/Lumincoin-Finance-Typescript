@@ -9,7 +9,7 @@ export class AuthUtils {
     public static userInfoTokenKey: string = 'userInfo'
 
 
-    public static setAuthInfo (accessToken: string, refreshToken: string, userInfo?: UserInfoType ): void {
+    public static setAuthInfo (accessToken: string , refreshToken: string, userInfo?: UserInfoType ): void {
         localStorage.setItem(this.accessTokenKey, accessToken);
         localStorage.setItem(this.refreshTokenKey, refreshToken);
         localStorage.setItem(this.userInfoTokenKey, JSON.stringify(userInfo));

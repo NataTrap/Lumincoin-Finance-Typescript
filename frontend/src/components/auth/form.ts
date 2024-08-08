@@ -16,12 +16,10 @@ export class Form {
     private nameElement: HTMLInputElement | null
     private lastNameElement: HTMLInputElement | null
     private emailElement: HTMLInputElement | null
-    private commonErrorLoginElement: HTMLElement | null
     private commonErrorSignUpElement: HTMLElement | null
     private confirmPasswordElement: HTMLInputElement | null
     private rememberMeElement: HTMLInputElement | null
-    private  validateField: any
-
+   
 
     constructor(openNewRote: OpenNewRoute, page: string) {
         this.openNewRoute = openNewRote
@@ -31,7 +29,6 @@ export class Form {
         this.nameElement = document.getElementById('name') as HTMLInputElement | null
         this.lastNameElement = document.getElementById('lastName') as HTMLInputElement
         this.emailElement = document.getElementById('email') as HTMLInputElement
-        this.commonErrorLoginElement = document.getElementById('common-error-login')
         this.commonErrorSignUpElement = document.getElementById('common-error-sign-up')
         this.confirmPasswordElement = document.getElementById('confirm-password') as HTMLInputElement
         this.rememberMeElement = document.getElementById('flexCheckDefault') as HTMLInputElement
@@ -60,23 +57,23 @@ export class Form {
                     name: 'name',
                     id: 'name',
                     element: null,
-                    regex: /^[A-Z][А-Я][a-z][а-я]+\s*$/,
+                    regex: /^[a-zA-Z ]{2,30}$/,
                     valid: false,
                 },
                 {
                     name: 'lastName',
                     id: 'lastName',
                     element: null,
-                    regex: /^[A-Z][А-Я][a-z][а-я]+\s*$/,
+                    regex: /^[a-zA-Z ]{2,30}$/,
                     valid: false,
                 }
             )
-
             this.fields.push(
                 {
                     name: 'confirm-password',
                     id: 'confirm-password',
                     element: null,
+                    regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
                     valid: false,
                 }
             )
@@ -103,48 +100,49 @@ export class Form {
     }
 
 
-    // private validateField(field: FieldsType, element: HTMLInputElement): void {
-    //     if(element.parentNode) {
-    //         if (!element.value || !element.value.match(field.regex)) {
-    //             (element.parentNode as HTMLElement).style.borderColor = 'red';
-    //             field.valid = false;
-    
-    //         } else {
-    //             element.style.borderColor = '';
-    //             field.valid = true;
-    //         }
+    private validateField(field: FieldsType, element: HTMLInputElement): void {
+        if(element.parentNode) {
+            if (!element.value || !element.value.match(field.regex)) {
+                (element.parentNode as HTMLElement).style.borderColor = 'red';
+                field.valid = false;
+            } else {
+                (element.parentNode as HTMLElement).style.borderColor = '';
+                field.valid = true;
+            }
 
-    //     }
+        }
        
-    //     if (this.page === 'sign-up') {
-    //         if (this.confirmPasswordElement) {
-    //             this.confirmPasswordElement.style.borderColor = ''
-    //             if (this.passwordElement) {
-    //                 if (this.passwordElement.value === this.confirmPasswordElement.value) {
-    //                     (this.confirmPasswordElement).style.borderColor = ''
-    //                 } else {
-    //                     this.confirmPasswordElement.style.borderColor = 'red'
-    //                 }
-    //             }              
-    //         }
+        if (this.page === 'sign-up') {
+            if (this.confirmPasswordElement) {
+                this.confirmPasswordElement.style.borderColor = ''
+                if (this.passwordElement) {
+                    if (this.passwordElement.value === this.confirmPasswordElement.value) {
+                        (this.confirmPasswordElement).style.borderColor = ''
+                    } else {
+                        this.confirmPasswordElement.style.borderColor = 'red'
+                    }
+                }              
+            }
            
-    //     }
-    //     this.validateForm()
-    // }
+        }
+        this.validateForm()
+    }
 
 
     private validateForm(): boolean {
-            const validForm = this.fields.every(item => item.valid);
-        
+            const validForm: boolean = this.fields.every(item => item.valid);
+          
             if (validForm) {
                 if (this.processElement) {
-                     this.processElement.removeAttribute('disabled')
+                  
+                        this.processElement.removeAttribute('disabled')
                 }
             } else {
                 if (this.processElement) {
-                    this.processElement.setAttribute('disabled', 'disabled')
-                }
                
+                    this.processElement.setAttribute('disabled', 'disabled')
+                  
+            }
             }
 
             return validForm
@@ -157,7 +155,6 @@ export class Form {
                     if (this.commonErrorSignUpElement) {
                         this.commonErrorSignUpElement.style.display = 'none';
                     }
-                   
 
                     let result: HttpUtilsResultType<SignUpResponseType> = await HttpUtils.request('/signup', 'POST', false, {
                         name: (this.nameElement as HTMLInputElement).value,
@@ -177,7 +174,6 @@ export class Form {
                     }
                     if (result.response)  {
                         AuthUtils.setAuthInfo('', '', {
-                       
                             name: result.response.user.name,
                             email: (this.emailElement as HTMLInputElement).value,
                             lastName: result.response.user.lastName,
@@ -201,9 +197,7 @@ export class Form {
 
 
         if (this.page === 'login') {
-            // this.commonErrorLoginElement.style.display = 'none'
             try {
-
                 const result: HttpUtilsResultType<LoginResponseType> = await HttpUtils.request('/login', 'POST', false, {
                     email: (this.emailElement as HTMLInputElement).value,
                     password: (this.passwordElement as HTMLInputElement).value,
@@ -220,25 +214,22 @@ export class Form {
                     }
 
                     if (result.response) {
-                        AuthUtils.setAuthInfo(result.response.tokens.accessToken, result.response.tokens.refreshToken, {
-                            name: result.response.user.name,
-                            lastName: result.response.user.lastName,
-                            id: result.response.user.id
-                        })
+                        if (result.response.tokens) {
+                            if (result.response.tokens.accessToken && result.response.tokens.refreshToken) {
+                                AuthUtils.setAuthInfo(result.response.tokens.accessToken, result.response.tokens.refreshToken,{
+                                    name: result.response.user.name,
+                                    lastName: result.response.user.lastName,
+                                    id: result.response.user.id
+                                })
+                            }
+                        }
+                        
                     }
-               
-
-
-
                 this.openNewRoute('/')
 
             } catch (error) {
                 return console.log(error)
             }
-
-
-
-
 
         }
 

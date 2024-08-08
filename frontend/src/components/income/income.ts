@@ -101,7 +101,7 @@ export class Income {
                 if(targetElement) {
                 let operationId: string | null = targetElement.getAttribute('data-id');
                 let deleteBtn:  HTMLElement | null = document.getElementById('delete-btn');
-                (deleteBtn as HTMLElement).setAttribute('href', '/delete-expense?id=' + operationId);
+                (deleteBtn as HTMLElement).setAttribute('href', '/delete-income?id=' + operationId);
                 }
             }
             });

@@ -1,5 +1,5 @@
 export type ChangedDataType = {
-    amount?: string
+    amount?: any
     type?: string
     category?: string
     date?: string

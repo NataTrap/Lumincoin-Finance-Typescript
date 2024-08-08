@@ -6,4 +6,5 @@ export type OperationsType = {
     comment: string,
     category: string
     response: any
+    error?: boolean
 }

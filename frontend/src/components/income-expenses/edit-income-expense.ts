@@ -25,7 +25,7 @@ export class EditIncomeExpense {
         this.commentElement = document.getElementById('comment') as HTMLInputElement
 
         const urlParams = new URLSearchParams(window.location.search)
-        const id = urlParams.get('id')
+        const id: string | null = urlParams.get('id')
         if (!id) {
             this.openNewRoute('/');
             return;
@@ -39,7 +39,7 @@ export class EditIncomeExpense {
             });
         }
        
-        const updateButton = document.getElementById('update-button')
+        const updateButton: HTMLElement | null = document.getElementById('update-button')
         if(updateButton) {
             updateButton.addEventListener('click', this.updateIncomeExpense.bind(this))
             this.getOperation(id).then()
@@ -103,7 +103,7 @@ export class EditIncomeExpense {
 
         if(this.typeSelectElement) {
             for (let i = 0; i < this.typeSelectElement.options.length; i++) {
-                if (this.typeSelectElement.options[i].value === result.response.type) {
+                if (this.typeSelectElement.options[i].value === (result.response as OperationsType).type) {
                     this.typeSelectElement.selectedIndex = i;
                 }
             }
@@ -156,7 +156,7 @@ export class EditIncomeExpense {
     }
 
 
-    private async updateIncomeExpense(e: Event, id: string): Promise<void> {
+    private async updateIncomeExpense(e: Event, id?: string): Promise<void> {
         e.preventDefault()
         if (this.validateForm()) {
             const changedData: ChangedDataType = {}
@@ -193,7 +193,7 @@ export class EditIncomeExpense {
                         return this.openNewRoute(result.redirect)
                     }
     
-                    if (result.error || !result.response || result.response ) {
+                    if (result.error || !result.response || (result.response && result.response.error))  {
                         return alert('Возникла ошибка при Редактирование. Обратитесь в поддержку')
                     }
                     return this.openNewRoute('/income-expenses')
