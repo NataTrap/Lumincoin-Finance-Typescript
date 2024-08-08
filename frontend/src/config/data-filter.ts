@@ -19,6 +19,7 @@ export class DateFilter { //отвечает за выбор периода и �
             (this.endDatePicker as HTMLInputElement).setAttribute('type', 'date');
         });
         this.initButtonsListeners();
+
     }
 
     private initButtonsListeners(): void { //обработчики событий на кнопки периодов и выбора даты
