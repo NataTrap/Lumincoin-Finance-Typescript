@@ -9,7 +9,7 @@ export class DateFilter { //отвечает за выбор периода и �
 
     constructor(getOperations: DateFilterType) {
         this.getOperations = getOperations; //при изменении фильтра делает новый запрос на сервер(метод из файла income-expenses.ts)
-        this.periodButtons = document.querySelectorAll('.diagram-btn');
+        this.periodButtons = document.querySelectorAll('.such-button');
         this.startDatePicker = document.getElementById('start-date') as HTMLInputElement;
         this.endDatePicker = document.getElementById('end-date') as HTMLInputElement;
         this.startDatePicker.addEventListener('focus', (): void => {

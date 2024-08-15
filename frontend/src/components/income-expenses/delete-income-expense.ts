@@ -21,8 +21,9 @@ export class DeleteIncomeExpense {
         if(result.redirect){
             return this.openNewRoute(result.redirect);
         }
-
-        if (result.error || !result.response || (result.response && result.response.error)) {
+        const response: DefaultErrorResponseType | null = result.response;
+        if (result.error || !response || (response && response.error)) {
+            console.log((response as DefaultErrorResponseType).message);
             return alert('Возникла ошибка при удалении операции');
         }
         return this.openNewRoute('/income-expenses');

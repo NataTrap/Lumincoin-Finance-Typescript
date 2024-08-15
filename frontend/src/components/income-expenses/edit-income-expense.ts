@@ -1,5 +1,6 @@
 import { CategoryType } from "../../types/category.type";
 import { ChangedDataType } from "../../types/change-data.type";
+import { DefaultResponseType } from "../../types/http-utils/default-response.type";
 import { HttpUtilsResultType } from "../../types/http-utils/httpUtils.type";
 import { OperationsType } from "../../types/operations.type";
 import { OpenNewRoute } from "../../types/route.type";
@@ -95,8 +96,10 @@ export class EditIncomeExpense {
             return this.openNewRoute(result.redirect)
         }
 
-        if (result.error || !result.response || result.response) {
-            return alert('Возникла ошибка при запросе операции. Обратитесь в поддержку')
+        const response: OperationsType | DefaultResponseType | null = result.response;
+        if (result.error || !response || (response && (response as DefaultResponseType).error)) {
+            console.log((response as DefaultResponseType).message);
+            return alert('Возникла ошибка при запросе операции');
         }
 
         this.operationOriginalData = result.response as OperationsType
@@ -112,7 +115,7 @@ export class EditIncomeExpense {
 
         await this.getIncomeCategories();
         await this.getExpenseCategories();
-        this.showOperation(result.response)
+        this.showOperation(result.response as OperationsType)
         this.showCategories(this.incomeOperation, this.expenseOperation);
     }
 
